@@ -19,5 +19,6 @@ rules:
       - batch
       - operator.autoscaling.openshift.io
       - management.apiconnect.ibm.com
+      - gateway.apiconnect.ibm.com
     resources:
       - '*'
