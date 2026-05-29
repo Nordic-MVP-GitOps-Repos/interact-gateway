@@ -18,6 +18,6 @@ rules:
       - apps
       - batch
       - operator.autoscaling.openshift.io
-      - ""
+      - management.apiconnect.ibm.com
     resources:
       - '*'
