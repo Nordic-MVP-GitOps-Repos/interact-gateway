@@ -18,6 +18,7 @@ rules:
       - apps
       - batch
       - secrets
+      - ingresscontrollers
       - operator.autoscaling.openshift.io
       - ""
     resources:
