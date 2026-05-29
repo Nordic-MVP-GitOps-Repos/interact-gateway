@@ -11,7 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 apiVersion: management.apiconnect.ibm.com/v1beta1
 kind: ManagementCluster
 metadata:
@@ -24,7 +23,7 @@ metadata:
     apiconnect-operator/cp4i: "false"
 spec:
   version: 12.1.0.3
-  profile: n1xc7.m48
+  profile: n1xc2.m16
   portal:
     admin:
       secretName: portal-admin-client
