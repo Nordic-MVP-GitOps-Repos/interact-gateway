@@ -6,5 +6,5 @@ metadata:
 spec:
   channel: v1.17
   name: datapower-operator
-  source: ibm-datapower-operator-catalog
+  source: ibm-operator-catalog
   sourceNamespace: openshift-marketplace
