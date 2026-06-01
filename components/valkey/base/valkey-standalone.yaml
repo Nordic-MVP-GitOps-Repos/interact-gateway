@@ -1,10 +1,7 @@
----
-# Source: valkey/templates/valkey-standalone.yaml
 apiVersion: valkey.datapower.ibm.com/v1beta2
 kind: Valkey
 metadata:
   name:  valkey
-  namespace: default
   labels:
     app.kubernetes.io/name: valkey
     helm.sh/chart: valkey-1.0.0
@@ -12,14 +9,16 @@ metadata:
     app.kubernetes.io/instance: valkey
     app.kubernetes.io/version: 1.0.0
     app.kubernetes.io/component: middleware
-  annotations:
-    
+  annotations:    
 spec:
   kubernetesConfig:
-    image: "REPLACE-DOCKER-REGISTRY/valkey:8.1.4@sha256:228954da8acaa22736279c477c4e5780284e306431eb2bf7bbb61710cfc5ec47"
+    image: "cp.icr.io/cp/datapower/valkey:8.1.4@sha256:228954da8acaa22736279c477c4e5780284e306431eb2bf7bbb61710cfc5ec47"
     imagePullPolicy: "Always"
     imagePullSecrets: 
-    - name: DEFAULT_IMAGE_PULL_SECRET
+    - name: ibm-entitlement-key
+    resources: 
+      requests: 
+        cpu: "100m"
     valkeySecret:
       name: "valkey-secret"
       key: "password"
