@@ -1,16 +1,3 @@
-
-# Self-signing Issuer for Valkey namespace
-apiVersion: cert-manager.io/v1
-kind: Issuer
-metadata:
-  name: selfsigning-issuer
-  labels:
-    app.kubernetes.io/instance: "valkey"
-    app.kubernetes.io/managed-by: "ibm-apiconnect"
-    app.kubernetes.io/name: "selfsigning-issuer"
-spec:
-  selfSigned: {}
----
 # Valkey CA Certificate
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -33,8 +20,8 @@ spec:
   - cert sign
   isCA: true
   issuerRef:
-    name: selfsigning-issuer
-    kind: Issuer
+    name: selfsigned-issuer
+    kind: ClusterIssuer
   secretTemplate:
     labels:
       app.kubernetes.io/instance: "valkey"
@@ -54,9 +41,7 @@ spec:
   ca:
     secretName: valkey-ca
 ---
-# Valkey Server Certificate with DNS SANs
-# This certificate is used for TLS connections to Valkey services
-# The secret will contain: ca.crt, tls.crt, and tls.key
+
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
