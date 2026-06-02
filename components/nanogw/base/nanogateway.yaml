@@ -1,0 +1,35 @@
+apiVersion: nanogateway.apiconnect.ibm.com/v1beta1
+kind: NanoGatewayCluster
+metadata:
+  name: ngw
+spec:
+  profile: n1xc2.m4
+  version: 12.1.0.3
+  license:
+    accept: true
+    use: nonproduction
+    license: 'L-AMGN-4YQ9TJ'
+  imagePullSecrets:
+  - ibm-entitlement-key
+  imageRegistry: cp.icr.io/cp/apic
+  certManagerIssuer:
+    kind: Issuer
+    name: selfsigning-issuer
+  microServiceSecurity: certManager
+  mgmtClientSubjectDN: CN=nano-gateway-mgmt-client,O=cert-manager
+  mgmtEndpoint:
+    annotations:
+      cert-manager.io/issuer: ingress-issuer
+    hosts:
+      - name: apic-gateway-proxy.apps.itz-m193f2.infra01-lb.lon04.techzone.ibm.com
+        secretName: gateway-proxy-endpoint
+  redis:
+    hosts:
+    - valkey.datapower-nano-system.svc.cluster.local
+    port: 6379
+    mode: standalone
+    credential:
+      secretName: valkey-secret
+    tls:
+      secretName: valkey-tls
+  gatewayDomain: nanogw.apps.itz-m193f2.infra01-lb.lon04.techzone.ibm.com

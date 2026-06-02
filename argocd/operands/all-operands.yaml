@@ -15,6 +15,9 @@ spec:
         - name: valkey
           namespace: datapower-nano-system
           sync-wave: "300"
+        - name: nanogw
+          namespace: datapower-nano-system
+          sync-wave: "300"
   template:
     metadata:
       name: '{{name}}'
