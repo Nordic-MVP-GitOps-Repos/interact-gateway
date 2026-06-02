@@ -3,5 +3,5 @@ kind: Kustomization
 
 resources:
 
-  - valkey-certificates.yaml
+  #- valkey-certificates.yaml
   - valkey-standalone.yaml
