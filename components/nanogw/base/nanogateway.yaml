@@ -31,5 +31,5 @@ spec:
     credential:
       secretName: valkey-secret
     tls:
-      secretName: valkey-tls
+      secretName: valkey-tls-secret
   gatewayDomain: nanogw.apps.itz-m193f2.infra01-lb.lon04.techzone.ibm.com
