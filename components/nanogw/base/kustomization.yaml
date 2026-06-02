@@ -3,10 +3,3 @@ kind: Kustomization
 
 resources:
   - nanogateway.yaml
-
-patches:
-  - path: ingresscontroller-wildcard-routes.yaml
-    target:
-      kind: IngressController
-      name: default
-      namespace: openshift-ingress-operator
