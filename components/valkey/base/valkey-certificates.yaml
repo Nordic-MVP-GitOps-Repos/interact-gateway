@@ -65,8 +65,6 @@ metadata:
     app.kubernetes.io/instance: "valkey"
     app.kubernetes.io/managed-by: "ibm-apiconnect"
     app.kubernetes.io/name: "valkey-tls"
-  annotations:
-    cert-utils-operator.redhat-cop.io/generate-cert-info: "true"
 spec:
   subject:
     organizations:
@@ -97,6 +95,8 @@ spec:
   privateKey:
     rotationPolicy: Always
   secretTemplate:
+    annotations:
+      cert-utils-operator.redhat-cop.io/generate-cert-info: "true"
     labels:
       app.kubernetes.io/instance: "valkey"
       app.kubernetes.io/managed-by: "ibm-apiconnect"
