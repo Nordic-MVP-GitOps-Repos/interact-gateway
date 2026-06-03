@@ -25,5 +25,6 @@ rules:
       - valkey.datapower.ibm.com
       - rbac.authorization.k8s.io
       - external-secrets.io
+      - generators.external-secrets.io
     resources:
       - '*'
