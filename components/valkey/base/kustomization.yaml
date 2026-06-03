@@ -5,6 +5,4 @@ resources:
   - valkey-ca-issuer.yaml
   - valkey-server-certificate.yaml
   - valkey-standalone.yaml
-  - external-secret.yaml
-  - password.yaml
-  - external-secrets-operatorconfig.yaml
+  - secret/
