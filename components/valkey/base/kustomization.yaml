@@ -7,3 +7,4 @@ resources:
   - valkey-standalone.yaml
   - external-secret.yaml
   - password.yaml
+  - external-secrets-operatorconfig.yaml
