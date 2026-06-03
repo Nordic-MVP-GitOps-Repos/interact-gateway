@@ -24,5 +24,6 @@ rules:
       - gateway.apiconnect.ibm.com
       - valkey.datapower.ibm.com
       - rbac.authorization.k8s.io
+      - external-secrets.io
     resources:
       - '*'
