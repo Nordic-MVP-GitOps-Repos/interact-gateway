@@ -26,5 +26,6 @@ rules:
       - rbac.authorization.k8s.io
       - external-secrets.io
       - generators.external-secrets.io
+      - operator.external-secrets.io
     resources:
       - '*'
