@@ -27,5 +27,6 @@ rules:
       - external-secrets.io
       - generators.external-secrets.io
       - operator.external-secrets.io
+      - ''
     resources:
       - '*'
