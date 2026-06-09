@@ -6,15 +6,15 @@ resources:
   - apic-argo-role.yaml
   - apic-argo-rb.yaml
 
-  - namespacemgmt.yaml
-  - common.yaml
+  #- namespacemgmt.yaml
+  #- common.yaml
 
-  - operators/all-operators.yaml
+  #- operators/all-operators.yaml
 
   # These get their own apps since they 
   # require specific sync policies
-  - operators/nanogw-operator.yaml
-  - operators/valkey-operator.yaml
+  #- operators/nanogw-operator.yaml
+  #- operators/valkey-operator.yaml
   
   #- operands/all-operands.yaml
  
