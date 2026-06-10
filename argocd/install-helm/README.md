@@ -26,29 +26,26 @@ helm repo update
 kubectl create namespace argocd
 ```
 
-### 3. Deploy the IKS TLS Secret into the `argocd` Namespace
+### 3. Copy the IKS TLS Secret to the `argocd` Namespace
 
 The Ingress controller requires the TLS secret to exist in the same namespace as the Ingress (`argocd`).
-Use the `ibmcloud ks` CLI to deploy it — this keeps the secret IBM-managed and auto-renewed:
+
+**Note:** This cluster's certificate has no CRN (status: `no_default_instance`), so `ibmcloud ks ingress secret create` cannot be used. The secret must be manually copied:
 
 ```bash
-ibmcloud ks ingress secret create \
-  --cluster mycluster-eu-de-1-bxf.8x32 \
-  --cert-crn $(ibmcloud ks ingress secret get \
-    --cluster mycluster-eu-de-1-bxf.8x32 \
-    --name mycluster-eu-de-1-bxf-8x3-e7d3d93b8b317d269525bf063b24f98d-0000 \
-    --namespace default \
-    --output json | jq -r '.certCrn') \
-  --name mycluster-eu-de-1-bxf-8x3-e7d3d93b8b317d269525bf063b24f98d-0000 \
-  --namespace argocd
+kubectl get secret mycluster-eu-de-1-bxf-8x3-e7d3d93b8b317d269525bf063b24f98d-0000 \
+  -n default -o yaml | \
+  sed 's/namespace: default/namespace: argocd/' | \
+  kubectl apply -f -
 ```
+
+**⚠️ Important:** This secret will need to be manually updated when the certificate is renewed. Consider using a Kubernetes secret replicator (e.g., Reflector) for automatic synchronization.
 
 ### 4. Install ArgoCD
 
 ```bash
 helm install argocd argo/argo-cd \
   --namespace argocd \
-  --create-namespace \
   --values values.yaml
 ```
 
@@ -121,29 +118,21 @@ kubectl delete namespace argocd
 
 ## IKS TLS Certificate
 
-The TLS secret `mycluster-eu-de-1-bxf-8x3-e7d3d93b8b317d269525bf063b24f98d-0000` is the IBM-managed wildcard certificate for this cluster's default Ingress subdomain:
+The TLS secret `mycluster-eu-de-1-bxf-8x3-e7d3d93b8b317d269525bf063b24f98d-0000` is a wildcard certificate for this cluster's default Ingress subdomain:
 
 ```
 *.mycluster-eu-de-1-bxf-8x3-e7d3d93b8b317d269525bf063b24f98d-0000.eu-de.containers.appdomain.cloud
 ```
 
-This means it covers **any service** exposed via the IKS public ALB on this cluster — not just ArgoCD. The same pattern can be reused for any namespace:
-
-```bash
-ibmcloud ks ingress secret create \
-  --cluster mycluster-eu-de-1-bxf.8x32 \
-  --cert-crn <CRN> \
-  --name mycluster-eu-de-1-bxf-8x3-e7d3d93b8b317d269525bf063b24f98d-0000 \
-  --namespace <your-namespace>
-```
-
-IBM rotates the certificate automatically (~90 days). All namespace copies deployed via `ibmcloud ks ingress secret create` are updated automatically on renewal.
+**Certificate Status:** This certificate has no CRN (`no_default_instance`), meaning it's not managed through IBM Certificate Manager. It must be manually copied to each namespace and manually updated on renewal.
 
 **Scope:**
 - ✅ Any `<anything>.<subdomain>.eu-de.containers.appdomain.cloud` hostname on this cluster
-- ✅ Auto-renewed by IBM across all managed namespace copies
+- ⚠️ Manual renewal required — certificate must be re-copied to all namespaces when renewed
 - ❌ Custom domains (e.g. `myapp.mycompany.com`) — those require a separate cert (cert-manager, Let's Encrypt, etc.)
 - ❌ Other clusters — each cluster has its own subdomain and certificate
+
+**Recommendation:** Consider using a Kubernetes secret replicator (e.g., [Reflector](https://github.com/emberstack/kubernetes-reflector)) to automatically sync the secret across namespaces.
 
 ---
 
