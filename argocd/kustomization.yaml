@@ -6,7 +6,7 @@ resources:
   - apic-argo-role.yaml
   - apic-argo-rb.yaml
 
-  #- operators/cert-manager-operator.yaml
+  - operators/cert-manager-operator.yaml
   #- operators/externals-secrets-operator.yaml
 
   #- operators/nanogw-operator.yaml
