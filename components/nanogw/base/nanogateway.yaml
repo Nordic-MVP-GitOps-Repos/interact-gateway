@@ -25,7 +25,7 @@ spec:
         secretName: gateway-proxy-endpoint
   redis:
     hosts:
-    - valkey.apic.svc.cluster.local
+    - valkey.nanogw.svc.cluster.local
     port: 6379
     mode: standalone
     credential:
