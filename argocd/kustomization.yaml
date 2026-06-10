@@ -9,7 +9,7 @@ resources:
   - operators/cert-manager-operator.yaml
   - operators/external-secrets-operator.yaml
 
-  #- operators/nanogw-operator.yaml
+  - operators/nanogw-operator.yaml
   #- operators/valkey-operator.yaml
 
   #- operands/all-operands.yaml
