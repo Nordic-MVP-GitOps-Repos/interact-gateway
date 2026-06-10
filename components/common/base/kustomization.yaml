@@ -5,6 +5,4 @@ resources:
   - catalogsource.yaml
   - namespace.yaml
   - operatorgroup.yaml
-  #- copy-cert
   - letsencrypt-chain.yaml
-  #- default-sa-scc-rb.yaml

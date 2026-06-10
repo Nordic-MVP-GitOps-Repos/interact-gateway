@@ -1,0 +1,21 @@
+---
+# The argocd-operator creates a ServiceAccount named "<instance-name>-argocd-application-controller"
+# inside the argocd namespace.  This ClusterRoleBinding grants it the
+# cluster-admin role so that it can manage resources in every namespace.
+#
+# If you prefer a tighter privilege model, swap cluster-admin for the
+# apic-argo-role ClusterRole that is already defined in the parent argocd/
+# directory, which grants precisely the resource verbs that this cluster needs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: argocd-application-controller-cluster-admin
+subjects:
+  - kind: ServiceAccount
+    # The operator names the SA after the ArgoCD CR: <name>-argocd-application-controller
+    name: argocd-argocd-application-controller
+    namespace: argocd
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin

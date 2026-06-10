@@ -1,20 +1,22 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: common
+  name: cert-manager-operator
   namespace: argocd
   labels:
     group: applications
   annotations:
-    argocd.argoproj.io/sync-wave: "100"
+    argocd.argoproj.io/sync-wave: "50"
 spec:
   destination:
-    namespace: nanogw
+    namespace: cert-manager
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: ./components/common/base
+    path: ./components/cert-manager/operator
   syncPolicy:
+    syncOptions:
+      - ServerSideApply=true
     automated:
       prune: true
       selfHeal: true

@@ -1,1 +1,13 @@
-https://www.ibm.com/docs/en/api-connect/software/12.1.0?topic=openshift-installing-api-connect-in-single-namespace
+Prereq: 
+
+OLM installed.
+ArgoCD installed.
+
+Apply bootstrap.yaml.
+
+See:
+
+https://www.ibm.com/docs/en/api-connect/software/12.1.0?topic=requirements-kubernetes-prerequisites-installing-datapower-nano-gateway-subsystem
+
+https://www.ibm.com/docs/en/api-connect/software/12.1.0?topic=subsystems-installing-datapower-nano-gateway-subsystem-kubernetes
+

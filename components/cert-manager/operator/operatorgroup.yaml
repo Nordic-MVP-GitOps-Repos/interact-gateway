@@ -1,8 +1,7 @@
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
 metadata:
-  name: nanogw
-  namespace: nanogw
+  name: cert-manager-og
+  namespace: cert-manager
 spec:
-  targetNamespaces:
-    - nanogw
+  targetNamespaces: []

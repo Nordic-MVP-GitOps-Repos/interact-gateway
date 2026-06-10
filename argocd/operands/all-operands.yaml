@@ -7,10 +7,10 @@ spec:
   - list:
       elements:
         - name: valkey
-          namespace: apic
+          namespace: nanogw
           sync-wave: "300"
         - name: nanogw
-          namespace: apic
+          namespace: nanogw
           sync-wave: "300"
   template:
     metadata:
@@ -22,7 +22,7 @@ spec:
     spec:
       project: default
       source:
-        path: 'envs/odf/nonprod/{{name}}/'
+        path: 'envs/iks/nonprod/{{name}}/'
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{namespace}}'

@@ -3,22 +3,21 @@ kind: Kustomization
 
 resources:
 
-  - apic-argo-role.yaml
-  - apic-argo-rb.yaml
+  #- apic-argo-role.yaml
+  #- apic-argo-rb.yaml
 
-  #- namespacemgmt.yaml
+  - operators/cert-manager-operator.yaml
+  - operators/externals-secrets-operator.yaml
+
   #- common.yaml
 
-  #- operators/all-operators.yaml
 
-  # These get their own apps since they 
-  # require specific sync policies
   #- operators/nanogw-operator.yaml
   #- operators/valkey-operator.yaml
+
   
   #- operands/all-operands.yaml
  
-  #- apis-and-products.yaml
 
 patches:
 - target:
