@@ -22,7 +22,7 @@ spec:
   version: 12.1.0.3
   imagePullSecrets:
   - ibm-entitlement-key
-  imageRegistry: cp.icr.io/cp
+  imageRegistry: cp.icr.io/cp/apic
   profile: n1xc2.m16
   portal:
     admin:
