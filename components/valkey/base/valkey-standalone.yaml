@@ -36,7 +36,7 @@ spec:
   storage:
     volumeClaimTemplate:
       spec:
-        storageClassName: ibmc-vpc-block-10iops-tier
+        storageClassName: PATCHED_BY_KUSTOMIZE
         accessModes:
           - ReadWriteOnce
         resources:

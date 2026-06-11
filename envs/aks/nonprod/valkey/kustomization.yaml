@@ -3,7 +3,7 @@ kind: Kustomization
 
 components:
 
-- ../../../../components/valkey/variants/cloudprovider/iks
+- ../../../../components/valkey/variants/cloudprovider/aks
 
 resources:
 - ../../../../components/valkey/base

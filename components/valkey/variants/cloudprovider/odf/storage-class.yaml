@@ -1,0 +1,16 @@
+apiVersion: valkey.datapower.ibm.com/v1beta2
+kind: Valkey
+metadata:
+  name:  valkey
+  labels:
+    app.kubernetes.io/name: valkey
+    helm.sh/chart: valkey-1.0.0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: valkey
+    app.kubernetes.io/version: 1.0.0
+    app.kubernetes.io/component: middleware    
+spec:
+  storage:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: ocs-storagecluster-ceph-rbd
