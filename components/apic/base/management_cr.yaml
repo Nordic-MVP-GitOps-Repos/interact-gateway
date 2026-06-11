@@ -19,11 +19,11 @@ kind: ManagementCluster
 metadata:
   name: management
 spec:
-  version: $APP_PRODUCT_VERSION
+  version: 12.1.0.3
   imagePullSecrets:
-  - $SECRET_NAME
-  imageRegistry: $DOCKER_REGISTRY
-  profile: $PROFILE
+  - ibm-entitlement-key
+  imageRegistry: cp.icr.io
+  profile: n1xc2.m4
   portal:
     admin:
       secretName: portal-admin-client
@@ -50,38 +50,38 @@ spec:
     annotations:
       cert-manager.io/issuer: ingress-issuer
     hosts:
-    - name: admin.$STACK_HOST
+    - name: admin.mycluster-eu-de-1-bxf-8x3-e7d3d93b8b317d269525bf063b24f98d-0000.eu-de.containers.appdomain.cloud
       secretName: cm-endpoint
   apiManagerEndpoint:
     #ingressClassName: $INGRESS_CLASS
     annotations:
       cert-manager.io/issuer: ingress-issuer
     hosts:
-    - name: manager.$STACK_HOST
+    - name: manager.mycluster-eu-de-1-bxf-8x3-e7d3d93b8b317d269525bf063b24f98d-0000.eu-de.containers.appdomain.cloud
       secretName: apim-endpoint
   consumerCatalogEndpoint:
     #ingressClassName: $INGRESS_CLASS
     annotations:
       cert-manager.io/issuer: ingress-issuer
     hosts:
-    - name: consumer-catalog.$STACK_HOST
+    - name: consumer-catalog.mycluster-eu-de-1-bxf-8x3-e7d3d93b8b317d269525bf063b24f98d-0000.eu-de.containers.appdomain.cloud
       secretName: consumer-catalog-endpoint
   platformAPIEndpoint:
     #ingressClassName: $INGRESS_CLASS
     annotations:
       cert-manager.io/issuer: ingress-issuer
     hosts:
-    - name: api.$STACK_HOST
+    - name: api.mycluster-eu-de-1-bxf-8x3-e7d3d93b8b317d269525bf063b24f98d-0000.eu-de.containers.appdomain.cloud
       secretName: api-endpoint
   consumerAPIEndpoint:
     #ingressClassName: $INGRESS_CLASS
     annotations:
       cert-manager.io/issuer: ingress-issuer
     hosts:
-    - name: consumer.$STACK_HOST
+    - name: consumer.mycluster-eu-de-1-bxf-8x3-e7d3d93b8b317d269525bf063b24f98d-0000.eu-de.containers.appdomain.cloud
       secretName: consumer-endpoint
   databaseVolumeClaimTemplate:
-    storageClassName: $STORAGE_CLASS
+    storageClassName: ibmc-vpc-block-10iops-tier
   microServiceSecurity: certManager
   #platformEndpointCASecret:
   #  secretName:
@@ -91,6 +91,6 @@ spec:
     name: selfsigning-issuer
     kind: Issuer
   license:
-    accept: false
-    use: production
-    license: ''
+    accept: true
+    use: nonproduction
+    license: 'L-AMGN-4YQ9TJ'
