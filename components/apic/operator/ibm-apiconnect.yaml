@@ -1125,7 +1125,7 @@ spec:
           value: ibm-apiconnect-validating-webhook-configuration
         - name: FIPS_ENABLED
           value: "false"
-        image: cp.icr.io/ibm-apiconnect-operator@sha256:cd4d73637bb761f4509c1f489293379564e8521eee132f1d1039d29d119ec85f
+        image: cp.icr.io/cp/ibm-apiconnect-operator@sha256:cd4d73637bb761f4509c1f489293379564e8521eee132f1d1039d29d119ec85f
         name: webhook
         resources:
           limits:
