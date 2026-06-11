@@ -194,7 +194,7 @@ spec:
             - name: POD_NAMESPACE
               valueFrom:
                 fieldRef:
-                  fieldPath: metadata.namespace
+                  fieldPath: metadata.namespace        
           image: cp.icr.io/cp/datapower/datapower-nano-operator:build.289@sha256:1143fb55029eb99389a9e055703d0e9fa785dffc39512563923b9873327cd299
           imagePullPolicy: Always
           name: datapower-nano-operator
