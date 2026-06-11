@@ -1081,9 +1081,8 @@ spec:
         - name: ENABLE_PPROF
           value: "false"
         - name: FIPS_ENABLED
-          value: "false"
-        image: cp.icr.io/cp/ibm-apiconnect-operator@sha256:cd4d73637bb761f4509c1f489293379564e8521eee132f1d1039d29d119ec85f
-        #image: cp.icr.io/cp/ibm-apiconnect-operator:10.0.10.0
+          value: "false"          
+        image: cp.icr.io/cp/ibm-apiconnect-operator@sha256:6319dfe4e1100269020bf8d0f8c50d5493f3f9a3b7fe5dc22434703cedbfa7a3
         name: ibm-apiconnect
         ports:
         - containerPort: 9443
@@ -1126,8 +1125,7 @@ spec:
           value: ibm-apiconnect-validating-webhook-configuration
         - name: FIPS_ENABLED
           value: "false"
-        image: cp.icr.io/cp/ibm-apiconnect-operator@sha256:cd4d73637bb761f4509c1f489293379564e8521eee132f1d1039d29d119ec85f
-        #image: cp.icr.io/cp/ibm-apiconnect-operator:10.0.10.0
+        image: cp.icr.io/cp/ibm-apiconnect-operator@sha256:6319dfe4e1100269020bf8d0f8c50d5493f3f9a3b7fe5dc22434703cedbfa7a3
         name: webhook
         resources:
           limits:
@@ -1169,8 +1167,7 @@ spec:
               fieldPath: metadata.uid
         - name: FIPS_ENABLED
           value: "false"
-        image: cp.icr.io/cp/ibm-apiconnect-operator@sha256:cd4d73637bb761f4509c1f489293379564e8521eee132f1d1039d29d119ec85f
-        #image: cp.icr.io/cp/ibm-apiconnect-operator:10.0.10.0
+        image: cp.icr.io/cp/ibm-apiconnect-operator@sha256:6319dfe4e1100269020bf8d0f8c50d5493f3f9a3b7fe5dc22434703cedbfa7a3
         name: webhook-delete
         resources:
           limits:
