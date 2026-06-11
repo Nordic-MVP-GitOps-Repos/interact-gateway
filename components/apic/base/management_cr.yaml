@@ -93,4 +93,5 @@ spec:
   license:
     accept: true
     use: nonproduction
-    license: 'L-AMGN-4YQ9TJ'
+    #license: 'L-AMGN-4YQ9TJ'
+    license: L-CXFF-XRSP3J
