@@ -23,7 +23,7 @@ spec:
   imagePullSecrets:
   - ibm-entitlement-key
   imageRegistry: cp.icr.io
-  profile: n1xc2.m4
+  profile: n1xc2.m16
   portal:
     admin:
       secretName: portal-admin-client
