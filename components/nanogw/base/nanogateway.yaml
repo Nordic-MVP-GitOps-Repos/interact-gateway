@@ -7,7 +7,7 @@ spec:
   version: 12.1.0.3
   license: {}
   imagePullSecrets:
-  - ibm-entitlement-key
+  - ibm-entitlement-key-nano
   imageRegistry: cp.icr.io/cp/apic
   certManagerIssuer:
     kind: Issuer
@@ -18,7 +18,7 @@ spec:
     annotations:
       cert-manager.io/issuer: ingress-issuer
     hosts:
-      - name: apic-gateway-proxy.apps.itz-m193f2.infra01-lb.lon04.techzone.ibm.com
+      - name: https://apic-gateway-proxy.mycluster-eu-de-1-bxf-8x3-e7d3d93b8b317d269525bf063b24f98d-0000.eu-de.containers.appdomain.cloud
         secretName: gateway-proxy-endpoint
   redis:
     hosts:
@@ -29,4 +29,4 @@ spec:
       secretName: valkey-secret
     tls:
       secretName: valkey-tls-secret
-  gatewayDomain: nanogw.apps.itz-m193f2.infra01-lb.lon04.techzone.ibm.com
+  gatewayDomain: nanogw.mycluster-eu-de-1-bxf-8x3-e7d3d93b8b317d269525bf063b24f98d-0000.eu-de.containers.appdomain.cloud
