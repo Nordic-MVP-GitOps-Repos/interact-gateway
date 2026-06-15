@@ -1077,12 +1077,12 @@ spec:
         - name: APPLIANCE
           value: "false"
         - name: IMAGE_REGISTRY
-          value: cp.icr.io/cp
+          value: icr.io/apic12
         - name: ENABLE_PPROF
           value: "false"
         - name: FIPS_ENABLED
           value: "false"
-        image: cp.icr.io/cp/ibm-apiconnect-operator@sha256:6319dfe4e1100269020bf8d0f8c50d5493f3f9a3b7fe5dc22434703cedbfa7a3
+        image: icr.io/apic12/ibm-apiconnect-operator@sha256:6319dfe4e1100269020bf8d0f8c50d5493f3f9a3b7fe5dc22434703cedbfa7a3
         name: ibm-apiconnect
         ports:
         - containerPort: 9443
@@ -1125,7 +1125,7 @@ spec:
           value: ibm-apiconnect-validating-webhook-configuration
         - name: FIPS_ENABLED
           value: "false"
-        image: cp.icr.io/cp/ibm-apiconnect-operator@sha256:6319dfe4e1100269020bf8d0f8c50d5493f3f9a3b7fe5dc22434703cedbfa7a3
+        image: icr.io/apic12/ibm-apiconnect-operator@sha256:6319dfe4e1100269020bf8d0f8c50d5493f3f9a3b7fe5dc22434703cedbfa7a3
         name: webhook
         resources:
           limits:
@@ -1167,7 +1167,7 @@ spec:
               fieldPath: metadata.uid
         - name: FIPS_ENABLED
           value: "false"
-        image: cp.icr.io/cp/ibm-apiconnect-operator@sha256:6319dfe4e1100269020bf8d0f8c50d5493f3f9a3b7fe5dc22434703cedbfa7a3
+        image: icr.io/apic12/ibm-apiconnect-operator@sha256:6319dfe4e1100269020bf8d0f8c50d5493f3f9a3b7fe5dc22434703cedbfa7a3
         name: webhook-delete
         resources:
           limits:
