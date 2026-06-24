@@ -79,7 +79,7 @@ spec:
     - name: consumer.mycluster-eu-de-1-bxf-8x3-e7d3d93b8b317d269525bf063b24f98d-0000.eu-de.containers.appdomain.cloud
       secretName: consumer-endpoint
   databaseVolumeClaimTemplate:
-    storageClassName: ibmc-vpc-block-10iops-tier
+    storageClassName: PATCHED_BY_KUSTOMIZE
   microServiceSecurity: certManager
   #platformEndpointCASecret:
   #  secretName:
@@ -88,8 +88,4 @@ spec:
   certManagerIssuer:
     name: selfsigning-issuer
     kind: Issuer
-  license:
-    accept: true
-    use: nonproduction
-    #license: 'L-AMGN-4YQ9TJ'
-    license: L-CXFF-XRSP3J
+  license: {}
