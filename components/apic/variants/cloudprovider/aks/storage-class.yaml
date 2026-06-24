@@ -1,7 +1,0 @@
-apiVersion: management.apiconnect.ibm.com/v1beta1
-kind: ManagementCluster
-metadata:
-  name: management
-spec:
-  databaseVolumeClaimTemplate:
-    storageClassName: managed-csi

@@ -1,7 +1,7 @@
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: apic-argo-rb
+  name: idig-argo-rb
 subjects:
   - kind: ServiceAccount
     name: argocd-application-controller
@@ -9,4 +9,4 @@ subjects:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: apic-argo-role
+  name: idig-argo-role

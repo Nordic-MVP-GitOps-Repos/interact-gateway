@@ -3,8 +3,8 @@ kind: Kustomization
 
 resources:
 
-  - apic-argo-role.yaml
-  - apic-argo-rb.yaml
+  - idig-argo-role.yaml
+  - idig-argo-rb.yaml
 
   - operators/cert-manager-operator.yaml
   - operators/external-secrets-operator.yaml
@@ -14,7 +14,7 @@ resources:
   - operators/valkey-operator.yaml
   - operators/envoy-operator.yaml
 
-  - operands/all-operands.yaml
+  #- operands/all-operands.yaml
  
 
 patches:
@@ -25,7 +25,7 @@ patches:
   patch: |-
     - op: add
       path: /spec/source/repoURL
-      value: https://github.com/louhaz/nano-gateway.git
+      value: https://github.com/Nordic-MVP-GitOps-Repos/interact-gateway.git
     - op: add
       path: /spec/source/targetRevision
 - target:
@@ -34,6 +34,6 @@ patches:
   patch: |-
     - op: add
       path: /spec/template/spec/source/repoURL
-      value: https://github.com/louhaz/nano-gateway.git
+      value: https://github.com/Nordic-MVP-GitOps-Repos/interact-gateway.git
     - op: add
       path: /spec/template/spec/source/targetRevision
