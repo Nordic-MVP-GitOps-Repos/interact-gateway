@@ -20,7 +20,15 @@ spec:
         - operator: Exists
       containers:
         - name: max-map-count-setter
-          image: registry.k8s.io/pause:3.9
+          image: mcr.microsoft.com/oss/busybox/busybox:1.36
+          securityContext:
+            privileged: true
+          command:
+            - /bin/sh
+            - -c
+            - |
+              nsenter --mount=/proc/1/ns/mnt -- sysctl -w vm.max_map_count=262144
+              sleep infinity
           resources:
             requests:
               cpu: 1m
@@ -28,15 +36,3 @@ spec:
             limits:
               cpu: 1m
               memory: 1Mi
-      initContainers:
-        - name: sysctl-setter
-          image: busybox:1.36
-          securityContext:
-            privileged: true
-          command:
-            - nsenter
-            - --mount=/proc/1/ns/mnt
-            - --
-            - sysctl
-            - -w
-            - vm.max_map_count=262144
