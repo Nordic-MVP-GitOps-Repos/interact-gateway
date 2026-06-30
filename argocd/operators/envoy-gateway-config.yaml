@@ -6,6 +6,7 @@ metadata:
 spec:
   project: default
   source:
+    repoURL: https://github.com/Nordic-MVP-GitOps-Repos/interact-gateway.git
     path: components/envoy/config
   destination:
     namespace: envoy-gateway-system
