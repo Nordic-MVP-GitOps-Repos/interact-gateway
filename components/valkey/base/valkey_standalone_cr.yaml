@@ -32,3 +32,12 @@ spec:
     key: "tls.key"
     secret:
       secretName: "valkey-tls"
+  storage:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: PATCHED_BY_KUSTOMIZE
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
