@@ -6,6 +6,9 @@ spec:
   generators:
   - list:
       elements:
+        - name: envoy
+          namespace: envoy-gateway-system
+          sync-wave: "300"
         - name: valkey
           namespace: idig
           sync-wave: "300"
