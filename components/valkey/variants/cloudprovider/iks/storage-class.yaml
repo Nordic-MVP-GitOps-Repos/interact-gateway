@@ -2,6 +2,7 @@ apiVersion: valkey.datapower.ibm.com/v1beta2
 kind: Valkey
 metadata:
   name:  valkey
+  namespace: idig
   labels:
     app.kubernetes.io/name: valkey
     helm.sh/chart: valkey-1.0.0
