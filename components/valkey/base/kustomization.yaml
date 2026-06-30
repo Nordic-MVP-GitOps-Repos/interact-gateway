@@ -4,5 +4,5 @@ kind: Kustomization
 resources:
   - valkey-ca-issuer.yaml
   - valkey-server-certificate.yaml
-  - valkey-standalone.yaml
+  - valkey_standalone_cr.yaml
   - secret/

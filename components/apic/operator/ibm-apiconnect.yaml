@@ -2,22 +2,22 @@ apiVersion: v1
 kind: Namespace
 metadata:
   annotations:
-    productVersion: 12.1.0.3-2787
+    productVersion: 12.1.1.0-1041
   labels:
     control-plane: ibm-apiconnect
-  name: nanogw
+  name: default
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: ibm-apiconnect
-  namespace: nanogw
+  namespace: REPLACE-NAMESPACE
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: ibm-apiconnect
-  namespace: nanogw
+  namespace: REPLACE-NAMESPACE
 rules:
 - apiGroups:
   - ""
@@ -497,7 +497,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: ibm-apiconnect-leader-election-role
-  namespace: nanogw
+  namespace: REPLACE-NAMESPACE
 rules:
 - apiGroups:
   - ""
@@ -617,8 +617,12 @@ rules:
   resources:
   - clusterissuers
   verbs:
+  - create
+  - delete
   - get
   - list
+  - patch
+  - update
   - watch
 - apiGroups:
   - config.openshift.io
@@ -760,11 +764,22 @@ rules:
   - postgresql.k8s.enterprisedb.io
   resources:
   - clusters/status
+  - failoverquorums/status
   - poolers/status
   verbs:
   - get
   - patch
   - update
+  - watch
+- apiGroups:
+  - postgresql.k8s.enterprisedb.io
+  resources:
+  - failoverquorums
+  verbs:
+  - create
+  - delete
+  - get
+  - list
   - watch
 - apiGroups:
   - rbac.authorization.k8s.io
@@ -885,7 +900,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: ibm-apiconnect
-  namespace: nanogw
+  namespace: REPLACE-NAMESPACE
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -893,13 +908,13 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: ibm-apiconnect
-  namespace: nanogw
+  namespace: REPLACE-NAMESPACE
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: ibm-apiconnect-leader-election-rolebinding
-  namespace: nanogw
+  namespace: REPLACE-NAMESPACE
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -907,7 +922,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: ibm-apiconnect
-  namespace: nanogw
+  namespace: REPLACE-NAMESPACE
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -920,7 +935,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: ibm-apiconnect
-  namespace: nanogw
+  namespace: REPLACE-NAMESPACE
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -933,7 +948,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: ibm-apiconnect
-  namespace: nanogw
+  namespace: REPLACE-NAMESPACE
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -946,7 +961,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: ibm-apiconnect
-  namespace: nanogw
+  namespace: REPLACE-NAMESPACE
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -959,13 +974,13 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: ibm-apiconnect
-  namespace: nanogw
+  namespace: REPLACE-NAMESPACE
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: ibm-apiconnect-metrics-service
-  namespace: nanogw
+  namespace: REPLACE-NAMESPACE
 spec:
   ports:
   - name: https
@@ -981,7 +996,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ibm-apiconnect-webhook-service
-  namespace: nanogw
+  namespace: REPLACE-NAMESPACE
 spec:
   ports:
   - port: 443
@@ -996,7 +1011,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: postgresql-operator-webhook-service
-  namespace: nanogw
+  namespace: REPLACE-NAMESPACE
 spec:
   ports:
   - port: 443
@@ -1013,9 +1028,9 @@ metadata:
     productID: 2c717d4ecc924aa5ac345015b55492eb
     productMetric: FREE
     productName: IBM API Connect Enterprise
-    productVersion: 12.1.0.3-2787
+    productVersion: 12.1.1.0-1041
   name: ibm-apiconnect
-  namespace: nanogw
+  namespace: REPLACE-NAMESPACE
 spec:
   replicas: 1
   selector:
@@ -1034,7 +1049,7 @@ spec:
         productID: 2c717d4ecc924aa5ac345015b55492eb
         productMetric: FREE
         productName: IBM API Connect Enterprise
-        productVersion: 12.1.0.3-2787
+        productVersion: 12.1.1.0-1041
       labels:
         app.kubernetes.io/component: apiconnect-operator
         app.kubernetes.io/instance: ibm-apiconnect
@@ -1077,12 +1092,14 @@ spec:
         - name: APPLIANCE
           value: "false"
         - name: IMAGE_REGISTRY
-          value: icr.io/apic12
+          value: REPLACE-DOCKER-REGISTRY
         - name: ENABLE_PPROF
           value: "false"
         - name: FIPS_ENABLED
           value: "false"
-        image: icr.io/apic12/ibm-apiconnect-operator@sha256:6319dfe4e1100269020bf8d0f8c50d5493f3f9a3b7fe5dc22434703cedbfa7a3
+        - name: OPERATOR_MODE
+          value: "idig"
+        image: REPLACE-DOCKER-REGISTRY/ibm-apiconnect-operator@sha256:6d9387192efe6eb09da8266242dc403c8dc19d83287f8dcd2ac99916075637f6
         name: ibm-apiconnect
         ports:
         - containerPort: 9443
@@ -1110,7 +1127,7 @@ spec:
         - mountPath: /extern-versions
           name: extern-versions
       imagePullSecrets:
-      - name: ibm-entitlement-key
+      - name: DEFAULT_IMAGE_PULL_SECRET
       initContainers:
       - args:
         - webhook-init
@@ -1125,7 +1142,9 @@ spec:
           value: ibm-apiconnect-validating-webhook-configuration
         - name: FIPS_ENABLED
           value: "false"
-        image: icr.io/apic12/ibm-apiconnect-operator@sha256:6319dfe4e1100269020bf8d0f8c50d5493f3f9a3b7fe5dc22434703cedbfa7a3
+        - name: OPERATOR_MODE
+          value: "idig"
+        image: REPLACE-DOCKER-REGISTRY/ibm-apiconnect-operator@sha256:6d9387192efe6eb09da8266242dc403c8dc19d83287f8dcd2ac99916075637f6
         name: webhook
         resources:
           limits:
@@ -1167,7 +1186,9 @@ spec:
               fieldPath: metadata.uid
         - name: FIPS_ENABLED
           value: "false"
-        image: icr.io/apic12/ibm-apiconnect-operator@sha256:6319dfe4e1100269020bf8d0f8c50d5493f3f9a3b7fe5dc22434703cedbfa7a3
+        - name: OPERATOR_MODE
+          value: "idig"
+        image: REPLACE-DOCKER-REGISTRY/ibm-apiconnect-operator@sha256:6d9387192efe6eb09da8266242dc403c8dc19d83287f8dcd2ac99916075637f6
         name: webhook-delete
         resources:
           limits:
@@ -1206,7 +1227,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /mutate-devportal-apiconnect-ibm-com-v1beta1-devportalcluster
   failurePolicy: Fail
   name: mdevportalcluster.kb.io
@@ -1226,7 +1247,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /mutate-federatedapimanagement-apiconnect-ibm-com-v1beta1-federatedapimanagementcluster
   failurePolicy: Fail
   name: mfederatedapimanagementcluster.kb.io
@@ -1246,7 +1267,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /mutate-analytics-apiconnect-ibm-com-v1beta1-analyticsbackup
   failurePolicy: Fail
   name: manalyticsbackup.kb.io
@@ -1266,7 +1287,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /mutate-analytics-apiconnect-ibm-com-v1beta1-analyticscluster
   failurePolicy: Fail
   name: manalyticscluster.kb.io
@@ -1286,7 +1307,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /mutate-gateway-apiconnect-ibm-com-v1beta1-gatewaycluster
   failurePolicy: Fail
   name: mgatewaycluster.kb.io
@@ -1306,7 +1327,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /mutate-management-apiconnect-ibm-com-v1beta1-managementcluster
   failurePolicy: Fail
   name: mmanagementcluster.kb.io
@@ -1326,7 +1347,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /mutate-management-apiconnect-ibm-com-v1beta1-managementdbupgrade
   failurePolicy: Fail
   name: mmanagementdbupgrade.kb.io
@@ -1346,7 +1367,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /mutate-management-apiconnect-ibm-com-v1beta1-managementrestore
   failurePolicy: Fail
   name: mmanagementrestore.kb.io
@@ -1366,7 +1387,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /mutate-portal-apiconnect-ibm-com-v1beta1-portalcluster
   failurePolicy: Fail
   name: mportalcluster.kb.io
@@ -1386,7 +1407,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /mutate-apiconnect-ibm-com-v1beta1-apiconnectcluster
   failurePolicy: Fail
   name: mapiconnectcluster.kb.io
@@ -1406,7 +1427,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /mutate-nanogateway-apiconnect-ibm-com-v1beta1-nanogatewaycluster
   failurePolicy: Fail
   name: mnanogatewaycluster.kb.io
@@ -1426,7 +1447,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /mutate-wmapigateway-apiconnect-ibm-com-v1beta1-wmapigatewaycluster
   failurePolicy: Fail
   name: mwmapigatewaycluster.kb.io
@@ -1452,7 +1473,7 @@ webhooks:
   clientConfig:
     service:
       name: postgresql-operator-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /mutate-postgresql-k8s-enterprisedb-io-v1-backup
   failurePolicy: Fail
   name: mbackup.k8s.enterprisedb.io
@@ -1472,7 +1493,7 @@ webhooks:
   clientConfig:
     service:
       name: postgresql-operator-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /mutate-postgresql-k8s-enterprisedb-io-v1-cluster
   failurePolicy: Fail
   name: mcluster.k8s.enterprisedb.io
@@ -1492,7 +1513,27 @@ webhooks:
   clientConfig:
     service:
       name: postgresql-operator-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
+      path: /mutate-postgresql-k8s-enterprisedb-io-v1-database
+  failurePolicy: Fail
+  name: mdatabase.k8s.enterprisedb.io
+  rules:
+  - apiGroups:
+    - postgresql.k8s.enterprisedb.io
+    apiVersions:
+    - v1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - databases
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: postgresql-operator-webhook-service
+      namespace: REPLACE-NAMESPACE
       path: /mutate-postgresql-k8s-enterprisedb-io-v1-scheduledbackup
   failurePolicy: Fail
   name: mscheduledbackup.k8s.enterprisedb.io
@@ -1518,7 +1559,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /validate-devportal-apiconnect-ibm-com-v1beta1-devportalcluster
   failurePolicy: Fail
   name: vdevportalcluster.kb.io
@@ -1538,7 +1579,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /validate-federatedapimanagement-apiconnect-ibm-com-v1beta1-federatedapimanagementcluster
   failurePolicy: Fail
   name: vfederatedapimanagementcluster.kb.io
@@ -1558,7 +1599,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /validate-analytics-apiconnect-ibm-com-v1beta1-analyticsbackup
   failurePolicy: Fail
   name: vanalyticsbackup.kb.io
@@ -1579,7 +1620,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /validate-analytics-apiconnect-ibm-com-v1beta1-analyticscluster
   failurePolicy: Fail
   name: vanalyticscluster.kb.io
@@ -1600,7 +1641,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /validate-analytics-apiconnect-ibm-com-v1beta1-analyticsrestore
   failurePolicy: Fail
   name: vanalyticsrestore.kb.io
@@ -1621,7 +1662,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /validate-analytics-apiconnect-ibm-com-v1beta1-analyticssecretrotation
   failurePolicy: Fail
   name: vanalyticssecretrotation.kb.io
@@ -1642,7 +1683,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /validate-gateway-apiconnect-ibm-com-v1beta1-gatewaycluster
   failurePolicy: Fail
   name: vgatewaycluster.kb.io
@@ -1662,7 +1703,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /validate-management-apiconnect-ibm-com-v1beta1-managementcluster
   failurePolicy: Fail
   name: vmanagementcluster.kb.io
@@ -1682,7 +1723,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /validate-management-apiconnect-ibm-com-v1beta1-managementdbupgrade
   failurePolicy: Fail
   name: vmanagementdbupgrade.kb.io
@@ -1702,7 +1743,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /validate-management-apiconnect-ibm-com-v1beta1-managementrestore
   failurePolicy: Fail
   name: vmanagementrestore.kb.io
@@ -1722,7 +1763,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /validate-portal-apiconnect-ibm-com-v1beta1-portalbackup
   failurePolicy: Fail
   name: vportalbackup.kb.io
@@ -1743,7 +1784,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /validate-portal-apiconnect-ibm-com-v1beta1-portalcluster
   failurePolicy: Fail
   name: vportalcluster.kb.io
@@ -1763,7 +1804,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /validate-portal-apiconnect-ibm-com-v1beta1-portalrestore
   failurePolicy: Fail
   name: vportalrestore.kb.io
@@ -1784,7 +1825,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /validate-portal-apiconnect-ibm-com-v1beta1-portalsecretrotation
   failurePolicy: Fail
   name: vportalsecretrotation.kb.io
@@ -1805,7 +1846,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /validate-apiconnect-ibm-com-v1beta1-apiconnectcluster
   failurePolicy: Fail
   name: vapiconnectcluster.kb.io
@@ -1825,7 +1866,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /validate-nanogateway-apiconnect-ibm-com-v1beta1-nanogatewaycluster
   failurePolicy: Fail
   name: vnanogatewaycluster.kb.io
@@ -1845,7 +1886,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /validate-wmapigateway-apiconnect-ibm-com-v1beta1-wmapigatewaybackup
   failurePolicy: Fail
   name: vwmapigatewaybackup.kb.io
@@ -1866,7 +1907,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /validate-wmapigateway-apiconnect-ibm-com-v1beta1-wmapigatewaycluster
   failurePolicy: Fail
   name: vwmapigatewaycluster.kb.io
@@ -1886,7 +1927,7 @@ webhooks:
   clientConfig:
     service:
       name: ibm-apiconnect-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /validate-wmapigateway-apiconnect-ibm-com-v1beta1-wmapigatewayrestore
   failurePolicy: Fail
   name: vwmapigatewayrestore.kb.io
@@ -1913,7 +1954,7 @@ webhooks:
   clientConfig:
     service:
       name: postgresql-operator-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /validate-postgresql-k8s-enterprisedb-io-v1-backup
   failurePolicy: Fail
   name: vbackup.k8s.enterprisedb.io
@@ -1933,7 +1974,7 @@ webhooks:
   clientConfig:
     service:
       name: postgresql-operator-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /validate-postgresql-k8s-enterprisedb-io-v1-cluster
   failurePolicy: Fail
   name: vcluster.k8s.enterprisedb.io
@@ -1953,7 +1994,27 @@ webhooks:
   clientConfig:
     service:
       name: postgresql-operator-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
+      path: /validate-postgresql-k8s-enterprisedb-io-v1-database
+  failurePolicy: Fail
+  name: vdatabase.k8s.enterprisedb.io
+  rules:
+  - apiGroups:
+    - postgresql.k8s.enterprisedb.io
+    apiVersions:
+    - v1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - databases
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: postgresql-operator-webhook-service
+      namespace: REPLACE-NAMESPACE
       path: /validate-postgresql-k8s-enterprisedb-io-v1-pooler
   failurePolicy: Fail
   name: vpooler.k8s.enterprisedb.io
@@ -1973,7 +2034,7 @@ webhooks:
   clientConfig:
     service:
       name: postgresql-operator-webhook-service
-      namespace: nanogw
+      namespace: REPLACE-NAMESPACE
       path: /validate-postgresql-k8s-enterprisedb-io-v1-scheduledbackup
   failurePolicy: Fail
   name: vscheduledbackup.k8s.enterprisedb.io

@@ -5,7 +5,7 @@ kind: ServiceAccount
 automountServiceAccountToken: true
 metadata:
   name: valkey-operator
-  namespace: nanogw
+  namespace: idig
   labels:
     app.kubernetes.io/name : valkey-operator
     helm.sh/chart : valkey-operator-1.0.0
@@ -146,7 +146,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: valkey-operator
-  namespace: nanogw
+  namespace: idig
 roleRef:
   kind: ClusterRole
   name: valkey-operator
@@ -157,7 +157,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: valkey-operator
-  namespace: nanogw
+  namespace: idig
   labels:
     app.kubernetes.io/name: valkey-operator
     helm.sh/chart: valkey-operator-1.0.0
@@ -181,14 +181,13 @@ spec:
       automountServiceAccountToken: true
       imagePullSecrets:
         - name: ibm-entitlement-key
-      serviceAccountName: valkey-operator
       securityContext:
         {}
       containers:
       - name: "valkey-operator"
         securityContext:
           {}
-        image: "cp.icr.io/cp/datapower/valkey-operator:1.0.0@sha256:a2c97f301189aabc8a1dbaff2357d794af747305fea8e5d36e62ee4c9d8f058b"
+        image: "icr.io/idig/valkey-operator:1.0.0"
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
@@ -214,7 +213,7 @@ spec:
           protocol: TCP
         env:
         - name: OPERATOR_IMAGE
-          value: cp.icr.io/cp/datapower/valkey-operator:1.0.0@sha256:a2c97f301189aabc8a1dbaff2357d794af747305fea8e5d36e62ee4c9d8f058b
+          value: icr.io/idig/valkey-operator:1.0.0
         - name: ENABLE_WEBHOOKS
           value: "false"
         - name: POD_NAME

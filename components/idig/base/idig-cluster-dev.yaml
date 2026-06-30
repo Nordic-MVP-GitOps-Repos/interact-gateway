@@ -1,0 +1,60 @@
+apiVersion: datapowerinteractgateway.ibm.com/v1beta1
+kind: DatapowerInteractGatewayCluster
+metadata:
+  name: idig
+  namespace: idig
+spec:
+  imagePullSecrets:
+    - ibm-entitlement-key
+  imageRegistry: icr.io/idig
+  version: 12.1.1.0
+  profile: dev
+  # License configuration for IBM DataPower Interact Gateway
+  license:
+    accept: true
+    use: nonproduction  # Change to "production" for production deployments
+    license: "L-PAZT-LQ5TZL"
+
+  enableAnalytics: false  # Set to true to enable Analytics
+  enableDevPortal: false  # Set to true to enable DevPortal
+
+  # The base domain for all endpoints in the platform
+  domain: itzaks-nurmlarj.az.techzone.ibm.com
+
+  # Optional: Custom ingress certificate for IDIG Gateway HTTPRoutes (idig-api and idig-web)
+  # If not specified, cert-manager will automatically generate certificates using ingress-issuer
+  # The secret must be of type kubernetes.io/tls with tls.crt, tls.key, and ca.crt
+  # customIngressCertificate: "idig-custom-cert"
+  
+
+  # Tenant and group configuration
+  tenantName: "default-tenant"
+  groupName: "default-group"
+
+  # Optional: pre-created secret containing watsonx credentials.
+  # If omitted, GenAI-related services are not deployed.
+  #watsonxSecret: "watsonx-credentials"
+
+  # Storage configuration (optional)
+  # Global storage class for all subsystems
+  # If not specified, uses cluster default storage class
+  #storageClassName: "your-storage-class"
+  
+  # Analytics-specific storage configuration (optional)
+  # If not specified, defaults to 200Gi for shared storage
+  # analyticsStorage:
+  #   type: shared
+  #   shared:
+  #     volumeClaimTemplate:
+  #       storageClassName: "your-storage-class"  # Overrides global storageClassName
+  #       volumeSize: "200Gi"                     # Default: 200Gi
+
+  # Analytics-specific settings (optional)
+  # Configure analytics client authentication for the ingestion endpoint (ai.<domain>)
+  # analyticsSettings:
+  #   clientSubjectDN: "O=cert-manager,CN=analytics-ingestion-client"  # Expected client certificate subject DN for mTLS authentication (RFC 2253 format)
+
+  # NanoGateway configuration is handled by the profile template
+  # To customize NanoGateway settings, patch the NanoGatewayCluster CR after creation
+  nanoGateway:
+    gatewayDomain: nanogw.itzaks-nurmlarj.az.techzone.ibm.com

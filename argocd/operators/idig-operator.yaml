@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: valkey-operator
+  name: idig-operator
   namespace: argocd
   labels:
     group: applications
@@ -13,10 +13,11 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: ./components/valkey/operator
+    path: ./components/idig/operator
   syncPolicy:
     syncOptions:
       - ServerSideApply=true
+      - CreateNamespace=true
     automated:
       prune: true
       selfHeal: true

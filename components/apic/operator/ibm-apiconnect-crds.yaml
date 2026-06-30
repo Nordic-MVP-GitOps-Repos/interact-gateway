@@ -77,13 +77,14 @@ spec:
                 description: |-
                   Specifies which type of data should be included in the backup.
                   'all' includes all data, 'devportal' includes only Developer Portal data,
-                  'federatedapimanagement' includes only Federated API Management data, 'analytics' includes only Analytics data.
+                  'federatedapimanagement' includes only Federated API Management data, 'analytics' includes only Analytics data, 'apiagent' includes only API Agent data.
                   Default is 'all' if not specified.
                 enum:
                 - all
                 - devportal
                 - federatedapimanagement
                 - analytics
+                - apiagent
                 type: string
               comment:
                 description: Comment that can be added to a backup
@@ -272,6 +273,9 @@ spec:
                 additionalProperties:
                   type: string
                 type: object
+              apiAgentMode:
+                description: Enable/disable storing data for the API Agent
+                type: boolean
               appVersion:
                 description: Product version (deprecated)
                 type: string
@@ -332,11 +336,10 @@ spec:
                         items:
                           properties:
                             name:
+                              default: ""
                               type: string
                             secretName:
                               type: string
-                          required:
-                          - name
                           type: object
                         type: array
                         x-kubernetes-list-map-keys:
@@ -661,11 +664,10 @@ spec:
                         items:
                           properties:
                             name:
+                              default: ""
                               type: string
                             secretName:
                               type: string
-                          required:
-                          - name
                           type: object
                         type: array
                         x-kubernetes-list-map-keys:
@@ -944,6 +946,27 @@ spec:
                       With the Volume Size, you can control how much persistent disk storage is allocated for Master (in Gi).
                       The default is 5Gi, but you can calculate how much storage you will need here: https://ibm.biz/BdPJjU
                       For more info: https://ibm.biz/BdPJj5
+                    properties:
+                      volumeClaimTemplate:
+                        description: Analytics storage persistent node volume claim
+                        properties:
+                          storageClassName:
+                            type: string
+                          volumeSize:
+                            description: 'Size of persistent volume in decimal or
+                              binary format i.e. Gi, G (For example: 120Gi or 120G)'
+                            type: string
+                        type: object
+                    type: object
+                  ml:
+                    description: |-
+                      This subsection configures the 'ML' persistent storage, which serves the microservice dedicated to machine learning workloads.
+                      ML nodes have the OpenSearch node role 'ml' and do NOT store data or process queries - they only execute ML jobs (anomaly detection, forecasting, clustering).
+                      ML nodes can be scaled independently of data nodes for performance isolation and cost optimization.
+                      When you select the Storage Class, a local-volume storage is recommended for best performance, although block storage is usable as well.
+                      With the Volume Size, you can control how much persistent disk storage is allocated for ML (in Gi).
+                      The default is 0 replicas (fully backward compatible) - only deploy ML nodes when needed for heavy ML usage.
+                      For more info: https://opensearch.org/docs/latest/ml-commons-plugin/index/
                     properties:
                       volumeClaimTemplate:
                         description: Analytics storage persistent node volume claim
@@ -3663,6 +3686,10 @@ spec:
                 description: Whether to enable/disable storing API Event data from
                   the Gateway. Set to false to turn off.
                 type: boolean
+              apiAgentMode:
+                description: Whether to enable/disable storing data for the API Agent.
+                  Set to false to turn off.
+                type: boolean
               backupSecretCerts:
                 description: Subsystem ES backup secret certs
                 type: string
@@ -4481,6 +4508,9 @@ spec:
                     additionalProperties:
                       type: string
                     type: object
+                  apiAgentMode:
+                    description: Enable/disable storing data for the API Agent
+                    type: boolean
                   awsCredentialsSecret:
                     description: Secret name containing AWS access key ID and secret
                       access key for the storage pod
@@ -4519,11 +4549,10 @@ spec:
                             items:
                               properties:
                                 name:
+                                  default: ""
                                   type: string
                                 secretName:
                                   type: string
-                              required:
-                              - name
                               type: object
                             type: array
                             x-kubernetes-list-map-keys:
@@ -4831,11 +4860,10 @@ spec:
                             items:
                               properties:
                                 name:
+                                  default: ""
                                   type: string
                                 secretName:
                                   type: string
-                              required:
-                              - name
                               type: object
                             type: array
                             x-kubernetes-list-map-keys:
@@ -5088,6 +5116,29 @@ spec:
                           With the Volume Size, you can control how much persistent disk storage is allocated for Master (in Gi).
                           The default is 5Gi, but you can calculate how much storage you will need here: https://ibm.biz/BdPJjU
                           For more info: https://ibm.biz/BdPJj5
+                        properties:
+                          volumeClaimTemplate:
+                            description: Analytics storage persistent node volume
+                              claim
+                            properties:
+                              storageClassName:
+                                type: string
+                              volumeSize:
+                                description: 'Size of persistent volume in decimal
+                                  or binary format i.e. Gi, G (For example: 120Gi
+                                  or 120G)'
+                                type: string
+                            type: object
+                        type: object
+                      ml:
+                        description: |-
+                          This subsection configures the 'ML' persistent storage, which serves the microservice dedicated to machine learning workloads.
+                          ML nodes have the OpenSearch node role 'ml' and do NOT store data or process queries - they only execute ML jobs (anomaly detection, forecasting, clustering).
+                          ML nodes can be scaled independently of data nodes for performance isolation and cost optimization.
+                          When you select the Storage Class, a local-volume storage is recommended for best performance, although block storage is usable as well.
+                          With the Volume Size, you can control how much persistent disk storage is allocated for ML (in Gi).
+                          The default is 0 replicas (fully backward compatible) - only deploy ML nodes when needed for heavy ML usage.
+                          For more info: https://opensearch.org/docs/latest/ml-commons-plugin/index/
                         properties:
                           volumeClaimTemplate:
                             description: Analytics storage persistent node volume
@@ -5420,11 +5471,10 @@ spec:
                         items:
                           properties:
                             name:
+                              default: ""
                               type: string
                             secretName:
                               type: string
-                          required:
-                          - name
                           type: object
                         type: array
                         x-kubernetes-list-map-keys:
@@ -5448,11 +5498,10 @@ spec:
                         items:
                           properties:
                             name:
+                              default: ""
                               type: string
                             secretName:
                               type: string
-                          required:
-                          - name
                           type: object
                         type: array
                         x-kubernetes-list-map-keys:
@@ -6430,8 +6479,25 @@ spec:
                       apiAgent:
                         description: Configuration for API Agent
                         properties:
+                          analyticsRef:
+                            description: Analytics subsystem to use as storage backend
+                              for API Agent
+                            properties:
+                              name:
+                                description: Name of Analytics Cluster
+                                type: string
+                              namespace:
+                                description: Namespace of Analytics Cluster
+                                type: string
+                            type: object
+                          codegenEnabled:
+                            description: Enable flag for the Codegen Service
+                            type: boolean
                           enabled:
                             description: Enable flag for the API Agent
+                            type: boolean
+                          rationalizationEnabled:
+                            description: Enable flag for the Rationalization Service
                             type: boolean
                           remoteVectorDatabase:
                             description: Configuration of the remote vector database
@@ -6488,11 +6554,10 @@ spec:
                             items:
                               properties:
                                 name:
+                                  default: ""
                                   type: string
                                 secretName:
                                   type: string
-                              required:
-                              - name
                               type: object
                             type: array
                             x-kubernetes-list-map-keys:
@@ -6560,11 +6625,10 @@ spec:
                         items:
                           properties:
                             name:
+                              default: ""
                               type: string
                             secretName:
                               type: string
-                          required:
-                          - name
                           type: object
                         type: array
                         x-kubernetes-list-map-keys:
@@ -6601,11 +6665,10 @@ spec:
                         items:
                           properties:
                             name:
+                              default: ""
                               type: string
                             secretName:
                               type: string
-                          required:
-                          - name
                           type: object
                         type: array
                         x-kubernetes-list-map-keys:
@@ -6630,11 +6693,10 @@ spec:
                         items:
                           properties:
                             name:
+                              default: ""
                               type: string
                             secretName:
                               type: string
-                          required:
-                          - name
                           type: object
                         type: array
                         x-kubernetes-list-map-keys:
@@ -6659,11 +6721,10 @@ spec:
                         items:
                           properties:
                             name:
+                              default: ""
                               type: string
                             secretName:
                               type: string
-                          required:
-                          - name
                           type: object
                         type: array
                         x-kubernetes-list-map-keys:
@@ -6837,11 +6898,10 @@ spec:
                             items:
                               properties:
                                 name:
+                                  default: ""
                                   type: string
                                 secretName:
                                   type: string
-                              required:
-                              - name
                               type: object
                             type: array
                             x-kubernetes-list-map-keys:
@@ -6988,11 +7048,10 @@ spec:
                             items:
                               properties:
                                 name:
+                                  default: ""
                                   type: string
                                 secretName:
                                   type: string
-                              required:
-                              - name
                               type: object
                             type: array
                             x-kubernetes-list-map-keys:
@@ -7055,11 +7114,10 @@ spec:
                         items:
                           properties:
                             name:
+                              default: ""
                               type: string
                             secretName:
                               type: string
-                          required:
-                          - name
                           type: object
                         type: array
                         x-kubernetes-list-map-keys:
@@ -7124,11 +7182,10 @@ spec:
                             items:
                               properties:
                                 name:
+                                  default: ""
                                   type: string
                                 secretName:
                                   type: string
-                              required:
-                              - name
                               type: object
                             type: array
                             x-kubernetes-list-map-keys:
@@ -7167,11 +7224,10 @@ spec:
                             items:
                               properties:
                                 name:
+                                  default: ""
                                   type: string
                                 secretName:
                                   type: string
-                              required:
-                              - name
                               type: object
                             type: array
                             x-kubernetes-list-map-keys:
@@ -7223,7 +7279,11 @@ spec:
                     description: Configuration for the Nano Gateway Transfer Advisor
                       service
                     properties:
+                      cronJobEnabled:
+                        description: Enable the Transfer Advisor cron job
+                        type: boolean
                       enabled:
+                        default: true
                         description: Enable the Transfer Advisor feature
                         type: boolean
                       taskEnabled:
@@ -7386,11 +7446,10 @@ spec:
                             items:
                               properties:
                                 name:
+                                  default: ""
                                   type: string
                                 secretName:
                                   type: string
-                              required:
-                              - name
                               type: object
                             type: array
                             x-kubernetes-list-map-keys:
@@ -7440,11 +7499,10 @@ spec:
                         items:
                           properties:
                             name:
+                              default: ""
                               type: string
                             secretName:
                               type: string
-                          required:
-                          - name
                           type: object
                         type: array
                         x-kubernetes-list-map-keys:
@@ -7531,11 +7589,10 @@ spec:
                         items:
                           properties:
                             name:
+                              default: ""
                               type: string
                             secretName:
                               type: string
-                          required:
-                          - name
                           type: object
                         type: array
                         x-kubernetes-list-map-keys:
@@ -10483,7 +10540,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.20.1
   name: backups.postgresql.k8s.enterprisedb.io
 spec:
   group: postgresql.k8s.enterprisedb.io
@@ -10694,6 +10751,11 @@ spec:
                     - key
                     - name
                     type: object
+                  useDefaultAzureCredentials:
+                    description: |-
+                      Use the default Azure authentication flow, which includes DefaultAzureCredential.
+                      This allows authentication using environment variables and managed identities.
+                    type: boolean
                 type: object
               backupId:
                 description: The ID of the Barman backup
@@ -10790,6 +10852,13 @@ spec:
                     type: string
                   podName:
                     description: The pod name
+                    type: string
+                  sessionID:
+                    description: |-
+                      The instance manager session ID. This is a unique identifier generated at instance manager
+                      startup and changes on every restart (including container reboots). Used to detect if
+                      the instance manager was restarted during long-running operations like backups, which
+                      would terminate any running backup process.
                     type: string
                 type: object
               majorVersion:
@@ -10933,7 +11002,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.20.1
   name: clusterimagecatalogs.postgresql.k8s.enterprisedb.io
 spec:
   group: postgresql.k8s.enterprisedb.io
@@ -10981,6 +11050,112 @@ spec:
                 items:
                   description: CatalogImage defines the image and major version
                   properties:
+                    extensions:
+                      description: The configuration of the extensions to be added
+                      items:
+                        description: |-
+                          ExtensionConfiguration is the configuration used to add
+                          PostgreSQL extensions to the Cluster.
+                        properties:
+                          bin_path:
+                            description: |-
+                              A list of directories within the image to be appended to the
+                              PostgreSQL process's `PATH` environment variable.
+                            items:
+                              type: string
+                            type: array
+                          dynamic_library_path:
+                            description: |-
+                              The list of directories inside the image which should be added to dynamic_library_path.
+                              If not defined, defaults to "/lib".
+                            items:
+                              type: string
+                            type: array
+                          env:
+                            description: |-
+                              Env is a list of custom environment variables to be set in the
+                              PostgreSQL process for this extension. It is the responsibility of the
+                              cluster administrator to ensure the variables are correct for the
+                              specific extension. Note that changes to these variables require
+                              a manual cluster restart to take effect.
+                            items:
+                              description: |-
+                                ExtensionEnvVar defines an environment variable for a specific extension
+                                image volume.
+                              properties:
+                                name:
+                                  description: |-
+                                    Name of the environment variable to be injected into the
+                                    PostgreSQL process.
+                                  minLength: 1
+                                  pattern: ^[a-zA-Z_][a-zA-Z0-9_]*$
+                                  type: string
+                                value:
+                                  description: |-
+                                    Value of the environment variable. EDB Postgres for Kubernetes performs a direct
+                                    replacement of this value, with support for placeholder expansion.
+                                    The ${`image_root`} placeholder resolves to the absolute mount path
+                                    of the extension's volume (e.g., `/extensions/my-extension`). This
+                                    is particularly useful for allowing applications or libraries to
+                                    locate specific directories within the mounted image.
+                                    Unrecognized placeholders are rejected. To include a literal ${...}
+                                    in the value, escape it as $${...}.
+                                  minLength: 1
+                                  type: string
+                              required:
+                              - name
+                              - value
+                              type: object
+                            type: array
+                            x-kubernetes-list-map-keys:
+                            - name
+                            x-kubernetes-list-type: map
+                          extension_control_path:
+                            description: |-
+                              The list of directories inside the image which should be added to extension_control_path.
+                              If not defined, defaults to "/share".
+                            items:
+                              type: string
+                            type: array
+                          image:
+                            description: The image containing the extension.
+                            properties:
+                              pullPolicy:
+                                description: |-
+                                  Policy for pulling OCI objects. Possible values are:
+                                  Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+                                  Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+                                  IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+                                  Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+                                type: string
+                              reference:
+                                description: |-
+                                  Required: Image or artifact reference to be used.
+                                  Behaves in the same way as pod.spec.containers[*].image.
+                                  Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+                                  More info: https://kubernetes.io/docs/concepts/containers/images
+                                  This field is optional to allow higher level config management to default or override
+                                  container images in workload controllers like Deployments and StatefulSets.
+                                type: string
+                            type: object
+                          ld_library_path:
+                            description: The list of directories inside the image
+                              which should be added to ld_library_path.
+                            items:
+                              type: string
+                            type: array
+                          name:
+                            description: The name of the extension, required
+                            minLength: 1
+                            pattern: ^[a-z0-9]([-a-z0-9_]*[a-z0-9])?$
+                            type: string
+                        required:
+                        - name
+                        type: object
+                      type: array
+                      x-kubernetes-list-map-keys:
+                      - name
+                      x-kubernetes-list-type: map
                     image:
                       description: The image reference
                       type: string
@@ -11014,7 +11189,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.20.1
   name: clusters.postgresql.k8s.enterprisedb.io
 spec:
   group: postgresql.k8s.enterprisedb.io
@@ -12031,9 +12206,10 @@ spec:
                         operator:
                           description: |-
                             Operator represents a key's relationship to the value.
-                            Valid operators are Exists and Equal. Defaults to Equal.
+                            Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
                             Exists is equivalent to wildcard for value, so that a pod can
                             tolerate all taints of a particular category.
+                            Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
                           type: string
                         tolerationSeconds:
                           description: |-
@@ -12126,6 +12302,11 @@ spec:
                             - key
                             - name
                             type: object
+                          useDefaultAzureCredentials:
+                            description: |-
+                              Use the default Azure authentication flow, which includes DefaultAzureCredential.
+                              This allows authentication using environment variables and managed identities.
+                            type: boolean
                         type: object
                       data:
                         description: |-
@@ -12564,8 +12745,6 @@ spec:
                               and certain flags may interfere with its intended functionality or design.
                               You are responsible for ensuring that the provided options are compatible
                               with your environment and desired behavior.
-
-                              Only available in 1.28 or later
                             items:
                               type: string
                             type: array
@@ -12589,8 +12768,6 @@ spec:
                               and certain flags may interfere with its intended functionality or design.
                               You are responsible for ensuring that the provided options are compatible
                               with your environment and desired behavior.
-
-                              Only available in 1.28 or later
                             items:
                               type: string
                             type: array
@@ -12603,8 +12780,6 @@ spec:
                               and certain flags may interfere with its intended functionality or design.
                               You are responsible for ensuring that the provided options are compatible
                               with your environment and desired behavior.
-
-                              Only available in 1.28 or later
                             items:
                               type: string
                             type: array
@@ -12999,8 +13174,9 @@ spec:
                               integer)
                             type: string
                           targetTime:
-                            description: The target time as a timestamp in the RFC3339
-                              standard
+                            description: |-
+                              The target time as a timestamp in RFC3339 format or PostgreSQL timestamp format.
+                              Timestamps without an explicit timezone are interpreted as UTC.
                             type: string
                           targetXID:
                             description: The target transaction ID
@@ -13518,7 +13694,7 @@ spec:
                           resources:
                             description: |-
                               resources represents the minimum resources the volume should have.
-                              If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+                              Users are allowed to specify resource requirements
                               that are lower than previous value but must still be higher than capacity recorded in the
                               status field of the claim.
                               More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
@@ -13722,6 +13898,11 @@ spec:
                               - key
                               - name
                               type: object
+                            useDefaultAzureCredentials:
+                              description: |-
+                                Use the default Azure authentication flow, which includes DefaultAzureCredential.
+                                This allows authentication using environment variables and managed identities.
+                              type: boolean
                           type: object
                         data:
                           description: |-
@@ -14903,7 +15084,6 @@ spec:
                       of the queries.
                       If not set, defaults to 30 seconds, in line with Prometheus scraping defaults.
                       Setting this to zero disables the caching mechanism and can cause heavy load on the PostgreSQL server.
-                      Only available in 1.28 or later
                     type: string
                   podMonitorMetricRelabelings:
                     description: |-
@@ -15152,7 +15332,6 @@ spec:
                   When set, this overrides the operator's default PodSecurityContext for the cluster.
                   If omitted, the operator defaults are used.
                   This field doesn't have any effect if SecurityContextConstraints are present.
-                  Only available in 1.28 or later
                 properties:
                   appArmorProfile:
                     description: |-
@@ -15521,14 +15700,19 @@ spec:
                         type: object
                     type: object
                   extensions:
-                    description: |-
-                      The configuration of the extensions to be added
-                      Only available in 1.28 or later
+                    description: The configuration of the extensions to be added
                     items:
                       description: |-
                         ExtensionConfiguration is the configuration used to add
                         PostgreSQL extensions to the Cluster.
                       properties:
+                        bin_path:
+                          description: |-
+                            A list of directories within the image to be appended to the
+                            PostgreSQL process's `PATH` environment variable.
+                          items:
+                            type: string
+                          type: array
                         dynamic_library_path:
                           description: |-
                             The list of directories inside the image which should be added to dynamic_library_path.
@@ -15536,6 +15720,45 @@ spec:
                           items:
                             type: string
                           type: array
+                        env:
+                          description: |-
+                            Env is a list of custom environment variables to be set in the
+                            PostgreSQL process for this extension. It is the responsibility of the
+                            cluster administrator to ensure the variables are correct for the
+                            specific extension. Note that changes to these variables require
+                            a manual cluster restart to take effect.
+                          items:
+                            description: |-
+                              ExtensionEnvVar defines an environment variable for a specific extension
+                              image volume.
+                            properties:
+                              name:
+                                description: |-
+                                  Name of the environment variable to be injected into the
+                                  PostgreSQL process.
+                                minLength: 1
+                                pattern: ^[a-zA-Z_][a-zA-Z0-9_]*$
+                                type: string
+                              value:
+                                description: |-
+                                  Value of the environment variable. EDB Postgres for Kubernetes performs a direct
+                                  replacement of this value, with support for placeholder expansion.
+                                  The ${`image_root`} placeholder resolves to the absolute mount path
+                                  of the extension's volume (e.g., `/extensions/my-extension`). This
+                                  is particularly useful for allowing applications or libraries to
+                                  locate specific directories within the mounted image.
+                                  Unrecognized placeholders are rejected. To include a literal ${...}
+                                  in the value, escape it as $${...}.
+                                minLength: 1
+                                type: string
+                            required:
+                            - name
+                            - value
+                            type: object
+                          type: array
+                          x-kubernetes-list-map-keys:
+                          - name
+                          x-kubernetes-list-type: map
                         extension_control_path:
                           description: |-
                             The list of directories inside the image which should be added to extension_control_path.
@@ -15544,7 +15767,7 @@ spec:
                             type: string
                           type: array
                         image:
-                          description: The image containing the extension, required
+                          description: The image containing the extension.
                           properties:
                             pullPolicy:
                               description: |-
@@ -15564,9 +15787,6 @@ spec:
                                 container images in workload controllers like Deployments and StatefulSets.
                               type: string
                           type: object
-                          x-kubernetes-validations:
-                          - message: An image reference is required
-                            rule: has(self.reference)
                         ld_library_path:
                           description: The list of directories inside the image which
                             should be added to ld_library_path.
@@ -15576,10 +15796,9 @@ spec:
                         name:
                           description: The name of the extension, required
                           minLength: 1
-                          pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                          pattern: ^[a-z0-9]([-a-z0-9_]*[a-z0-9])?$
                           type: string
                       required:
-                      - image
                       - name
                       type: object
                     type: array
@@ -15728,7 +15947,6 @@ spec:
                           FailoverQuorum enables a quorum-based check before failover, improving
                           data durability and safety during failover events in EDB Postgres for Kubernetes-managed
                           PostgreSQL clusters.
-                          Only available in 1.28 or later
                         type: boolean
                       maxStandbyNamesFromCluster:
                         description: |-
@@ -15785,7 +16003,10 @@ spec:
                 description: |-
                   Method to follow to upgrade the primary server during a rolling
                   update procedure, after all replicas have been successfully updated:
-                  it can be with a switchover (`switchover`) or in-place (`restart` - default)
+                  it can be with a switchover (`switchover`) or in-place (`restart` - default).
+                  Note: when using `switchover`, the operator will reject updates that change both
+                  the image name and PostgreSQL configuration parameters simultaneously to avoid
+                  configuration mismatches during the switchover process.
                 enum:
                 - switchover
                 - restart
@@ -15834,7 +16055,6 @@ spec:
                           primary is isolated from the Kubernetes API server and from its
                           replicas, ensuring that it can be safely shut down if network
                           partition or API unavailability is detected. Enabled by default.
-                          Only available in 1.27 or later
                         properties:
                           connectionTimeout:
                             default: 1000
@@ -15905,9 +16125,7 @@ spec:
                         anyOf:
                         - type: integer
                         - type: string
-                        description: |-
-                          Lag limit. Used only for `streaming` strategy
-                          Only available in 1.27 or later
+                        description: Lag limit. Used only for `streaming` strategy
                         pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                         x-kubernetes-int-or-string: true
                       periodSeconds:
@@ -15944,9 +16162,7 @@ spec:
                         format: int32
                         type: integer
                       type:
-                        description: |-
-                          The probe strategy
-                          Only available in 1.287or later
+                        description: The probe strategy
                         enum:
                         - pg_isready
                         - streaming
@@ -15972,9 +16188,7 @@ spec:
                         anyOf:
                         - type: integer
                         - type: string
-                        description: |-
-                          Lag limit. Used only for `streaming` strategy
-                          Only available in 1.27 or later
+                        description: Lag limit. Used only for `streaming` strategy
                         pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                         x-kubernetes-int-or-string: true
                       periodSeconds:
@@ -16011,9 +16225,7 @@ spec:
                         format: int32
                         type: integer
                       type:
-                        description: |-
-                          The probe strategy
-                          Only available in 1.287or later
+                        description: The probe strategy
                         enum:
                         - pg_isready
                         - streaming
@@ -16370,6 +16582,24 @@ spec:
                               description: Kubelet's generated CSRs will be addressed
                                 to this signer.
                               type: string
+                            userAnnotations:
+                              additionalProperties:
+                                type: string
+                              description: |-
+                                userAnnotations allow pod authors to pass additional information to
+                                the signer implementation.  Kubernetes does not restrict or validate this
+                                metadata in any way.
+
+                                These values are copied verbatim into the `spec.unverifiedUserAnnotations` field of
+                                the PodCertificateRequest objects that Kubelet creates.
+
+                                Entries are subject to the same validation as object metadata annotations,
+                                with the addition that all keys must be domain-prefixed. No restrictions
+                                are placed on values, except an overall size limitation on the entire field.
+
+                                Signers should document the keys and values they support. Signers should
+                                deny requests that contain keys they do not recognize.
+                              type: object
                           required:
                           - keyType
                           - signerName
@@ -16537,8 +16767,6 @@ spec:
                           Requires one of the following conditions:
                           - PostgreSQL version 17 or later
                           - PostgreSQL version < 17 with pg_failover_slots extension enabled
-
-                          Only available in 1.27 or later
                         type: boolean
                     type: object
                   synchronizeReplicas:
@@ -16664,7 +16892,6 @@ spec:
                   Override the SecurityContext applied to every Container in the Pod of the cluster.
                   When set, this overrides the operator's default Container SecurityContext.
                   If omitted, the operator defaults are used.
-                  Only available in 1.28 or later
                 properties:
                   allowPrivilegeEscalation:
                     description: |-
@@ -17009,7 +17236,7 @@ spec:
                       resources:
                         description: |-
                           resources represents the minimum resources the volume should have.
-                          If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+                          Users are allowed to specify resource requirements
                           that are lower than previous value but must still be higher than capacity recorded in the
                           status field of the claim.
                           More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
@@ -17265,7 +17492,7 @@ spec:
                             resources:
                               description: |-
                                 resources represents the minimum resources the volume should have.
-                                If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+                                Users are allowed to specify resource requirements
                                 that are lower than previous value but must still be higher than capacity recorded in the
                                 status field of the claim.
                                 More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
@@ -17673,7 +17900,7 @@ spec:
                       resources:
                         description: |-
                           resources represents the minimum resources the volume should have.
-                          If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+                          Users are allowed to specify resource requirements
                           that are lower than previous value but must still be higher than capacity recorded in the
                           status field of the claim.
                           More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
@@ -17826,10 +18053,6 @@ spec:
                   - hash
                   type: object
                 type: array
-              azurePVCUpdateEnabled:
-                description: AzurePVCUpdateEnabled shows if the PVC online upgrade
-                  is enabled for this cluster
-                type: boolean
               certificates:
                 description: The configuration for the CA and related certificates,
                   initialized with defaults.
@@ -18426,7 +18649,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.20.1
   name: databases.postgresql.k8s.enterprisedb.io
 spec:
   group: postgresql.k8s.enterprisedb.io
@@ -18548,9 +18771,7 @@ spec:
                 - absent
                 type: string
               extensions:
-                description: |-
-                  The list of extensions to be managed in the database
-                  Only available in 1.27 or later
+                description: The list of extensions to be managed in the database
                 items:
                   description: ExtensionSpec configures an extension in a database
                   properties:
@@ -18587,9 +18808,8 @@ spec:
                   type: object
                 type: array
               fdws:
-                description: |-
-                  The list of foreign data wrappers to be managed in the database
-                  Only available in 1.27 or later
+                description: The list of foreign data wrappers to be managed in the
+                  database
                 items:
                   description: FDWSpec configures an Foreign Data Wrapper in a database
                   properties:
@@ -18761,9 +18981,7 @@ spec:
                   The role name of the user who owns the database inside PostgreSQL.
                 type: string
               schemas:
-                description: |-
-                  The list of schemas to be managed in the database
-                  Only available in 1.27 or later
+                description: The list of schemas to be managed in the database
                 items:
                   description: SchemaSpec configures a schema in a database
                   properties:
@@ -18792,9 +19010,7 @@ spec:
                   type: object
                 type: array
               servers:
-                description: |-
-                  The list of foreign servers to be managed in the database
-                  Only available in 1.27 or later
+                description: The list of foreign servers to be managed in the database
                 items:
                   description: ServerSpec configures a server of a foreign data wrapper
                   properties:
@@ -19098,6 +19314,12 @@ spec:
                 description: Subject DN names (distinguish name) of the client certificates
                   used to authenticate with devportal admin endpoint (RFC 2253)
                 type: string
+              adminUser:
+                description: Secret name to use for admin credentials
+                properties:
+                  secretName:
+                    type: string
+                type: object
               analyticsRef:
                 description: Analytics subsystem to use as storage backend
                 properties:
@@ -19163,11 +19385,10 @@ spec:
                     items:
                       properties:
                         name:
+                          default: ""
                           type: string
                         secretName:
                           type: string
-                      required:
-                      - name
                       type: object
                     type: array
                     x-kubernetes-list-map-keys:
@@ -19191,11 +19412,10 @@ spec:
                     items:
                       properties:
                         name:
+                          default: ""
                           type: string
                         secretName:
                           type: string
-                      required:
-                      - name
                       type: object
                     type: array
                     x-kubernetes-list-map-keys:
@@ -22271,6 +22491,83 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
+    controller-gen.kubebuilder.io/version: v0.20.1
+  name: failoverquorums.postgresql.k8s.enterprisedb.io
+spec:
+  group: postgresql.k8s.enterprisedb.io
+  names:
+    kind: FailoverQuorum
+    listKind: FailoverQuorumList
+    plural: failoverquorums
+    singular: failoverquorum
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1
+    schema:
+      openAPIV3Schema:
+        description: |-
+          FailoverQuorum contains the information about the current failover
+          quorum status of a PG cluster. It is updated by the instance manager
+          of the primary node and reset to zero by the operator to trigger
+          an update.
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          status:
+            description: Most recently observed status of the failover quorum.
+            properties:
+              method:
+                description: Contains the latest reported Method value.
+                type: string
+              primary:
+                description: |-
+                  Primary is the name of the primary instance that updated
+                  this object the latest time.
+                type: string
+              standbyNames:
+                description: |-
+                  StandbyNames is the list of potentially synchronous
+                  instance names.
+                items:
+                  type: string
+                type: array
+              standbyNumber:
+                description: |-
+                  StandbyNumber is the number of synchronous standbys that transactions
+                  need to wait for replies from.
+                type: integer
+            type: object
+        required:
+        - metadata
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
     controller-gen.kubebuilder.io/version: v0.19.0
   labels:
     backup.apiconnect.ibm.com/component: federatedapimanagementcluster
@@ -22361,11 +22658,10 @@ spec:
                     items:
                       properties:
                         name:
+                          default: ""
                           type: string
                         secretName:
                           type: string
-                      required:
-                      - name
                       type: object
                     type: array
                     x-kubernetes-list-map-keys:
@@ -25169,11 +25465,10 @@ spec:
                     items:
                       properties:
                         name:
+                          default: ""
                           type: string
                         secretName:
                           type: string
-                      required:
-                      - name
                       type: object
                     type: array
                     x-kubernetes-list-map-keys:
@@ -25278,6 +25573,9 @@ spec:
               message:
                 description: Message
                 type: string
+              metadata:
+                description: Metadata hosts misc status data
+                x-kubernetes-preserve-unknown-fields: true
               microServiceSecurity:
                 description: Currently running micoservice security settings (custom
                   certificates, certManager)
@@ -25827,11 +26125,10 @@ spec:
                     items:
                       properties:
                         name:
+                          default: ""
                           type: string
                         secretName:
                           type: string
-                      required:
-                      - name
                       type: object
                     type: array
                     x-kubernetes-list-map-keys:
@@ -25855,11 +26152,10 @@ spec:
                     items:
                       properties:
                         name:
+                          default: ""
                           type: string
                         secretName:
                           type: string
-                      required:
-                      - name
                       type: object
                     type: array
                     x-kubernetes-list-map-keys:
@@ -29656,7 +29952,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.20.1
   name: imagecatalogs.postgresql.k8s.enterprisedb.io
 spec:
   group: postgresql.k8s.enterprisedb.io
@@ -29703,6 +29999,112 @@ spec:
                 items:
                   description: CatalogImage defines the image and major version
                   properties:
+                    extensions:
+                      description: The configuration of the extensions to be added
+                      items:
+                        description: |-
+                          ExtensionConfiguration is the configuration used to add
+                          PostgreSQL extensions to the Cluster.
+                        properties:
+                          bin_path:
+                            description: |-
+                              A list of directories within the image to be appended to the
+                              PostgreSQL process's `PATH` environment variable.
+                            items:
+                              type: string
+                            type: array
+                          dynamic_library_path:
+                            description: |-
+                              The list of directories inside the image which should be added to dynamic_library_path.
+                              If not defined, defaults to "/lib".
+                            items:
+                              type: string
+                            type: array
+                          env:
+                            description: |-
+                              Env is a list of custom environment variables to be set in the
+                              PostgreSQL process for this extension. It is the responsibility of the
+                              cluster administrator to ensure the variables are correct for the
+                              specific extension. Note that changes to these variables require
+                              a manual cluster restart to take effect.
+                            items:
+                              description: |-
+                                ExtensionEnvVar defines an environment variable for a specific extension
+                                image volume.
+                              properties:
+                                name:
+                                  description: |-
+                                    Name of the environment variable to be injected into the
+                                    PostgreSQL process.
+                                  minLength: 1
+                                  pattern: ^[a-zA-Z_][a-zA-Z0-9_]*$
+                                  type: string
+                                value:
+                                  description: |-
+                                    Value of the environment variable. EDB Postgres for Kubernetes performs a direct
+                                    replacement of this value, with support for placeholder expansion.
+                                    The ${`image_root`} placeholder resolves to the absolute mount path
+                                    of the extension's volume (e.g., `/extensions/my-extension`). This
+                                    is particularly useful for allowing applications or libraries to
+                                    locate specific directories within the mounted image.
+                                    Unrecognized placeholders are rejected. To include a literal ${...}
+                                    in the value, escape it as $${...}.
+                                  minLength: 1
+                                  type: string
+                              required:
+                              - name
+                              - value
+                              type: object
+                            type: array
+                            x-kubernetes-list-map-keys:
+                            - name
+                            x-kubernetes-list-type: map
+                          extension_control_path:
+                            description: |-
+                              The list of directories inside the image which should be added to extension_control_path.
+                              If not defined, defaults to "/share".
+                            items:
+                              type: string
+                            type: array
+                          image:
+                            description: The image containing the extension.
+                            properties:
+                              pullPolicy:
+                                description: |-
+                                  Policy for pulling OCI objects. Possible values are:
+                                  Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+                                  Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+                                  IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+                                  Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+                                type: string
+                              reference:
+                                description: |-
+                                  Required: Image or artifact reference to be used.
+                                  Behaves in the same way as pod.spec.containers[*].image.
+                                  Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+                                  More info: https://kubernetes.io/docs/concepts/containers/images
+                                  This field is optional to allow higher level config management to default or override
+                                  container images in workload controllers like Deployments and StatefulSets.
+                                type: string
+                            type: object
+                          ld_library_path:
+                            description: The list of directories inside the image
+                              which should be added to ld_library_path.
+                            items:
+                              type: string
+                            type: array
+                          name:
+                            description: The name of the extension, required
+                            minLength: 1
+                            pattern: ^[a-z0-9]([-a-z0-9_]*[a-z0-9])?$
+                            type: string
+                        required:
+                        - name
+                        type: object
+                      type: array
+                      x-kubernetes-list-map-keys:
+                      - name
+                      x-kubernetes-list-type: map
                     image:
                       description: The image reference
                       type: string
@@ -29819,8 +30221,25 @@ spec:
                   apiAgent:
                     description: Configuration for API Agent
                     properties:
+                      analyticsRef:
+                        description: Analytics subsystem to use as storage backend
+                          for API Agent
+                        properties:
+                          name:
+                            description: Name of Analytics Cluster
+                            type: string
+                          namespace:
+                            description: Namespace of Analytics Cluster
+                            type: string
+                        type: object
+                      codegenEnabled:
+                        description: Enable flag for the Codegen Service
+                        type: boolean
                       enabled:
                         description: Enable flag for the API Agent
+                        type: boolean
+                      rationalizationEnabled:
+                        description: Enable flag for the Rationalization Service
                         type: boolean
                       remoteVectorDatabase:
                         description: Configuration of the remote vector database when
@@ -29877,11 +30296,10 @@ spec:
                         items:
                           properties:
                             name:
+                              default: ""
                               type: string
                             secretName:
                               type: string
-                          required:
-                          - name
                           type: object
                         type: array
                         x-kubernetes-list-map-keys:
@@ -29949,11 +30367,10 @@ spec:
                     items:
                       properties:
                         name:
+                          default: ""
                           type: string
                         secretName:
                           type: string
-                      required:
-                      - name
                       type: object
                     type: array
                     x-kubernetes-list-map-keys:
@@ -30012,11 +30429,10 @@ spec:
                     items:
                       properties:
                         name:
+                          default: ""
                           type: string
                         secretName:
                           type: string
-                      required:
-                      - name
                       type: object
                     type: array
                     x-kubernetes-list-map-keys:
@@ -30040,11 +30456,10 @@ spec:
                     items:
                       properties:
                         name:
+                          default: ""
                           type: string
                         secretName:
                           type: string
-                      required:
-                      - name
                       type: object
                     type: array
                     x-kubernetes-list-map-keys:
@@ -30069,11 +30484,10 @@ spec:
                     items:
                       properties:
                         name:
+                          default: ""
                           type: string
                         secretName:
                           type: string
-                      required:
-                      - name
                       type: object
                     type: array
                     x-kubernetes-list-map-keys:
@@ -30261,11 +30675,10 @@ spec:
                         items:
                           properties:
                             name:
+                              default: ""
                               type: string
                             secretName:
                               type: string
-                          required:
-                          - name
                           type: object
                         type: array
                         x-kubernetes-list-map-keys:
@@ -30456,11 +30869,10 @@ spec:
                         items:
                           properties:
                             name:
+                              default: ""
                               type: string
                             secretName:
                               type: string
-                          required:
-                          - name
                           type: object
                         type: array
                         x-kubernetes-list-map-keys:
@@ -30518,11 +30930,10 @@ spec:
                     items:
                       properties:
                         name:
+                          default: ""
                           type: string
                         secretName:
                           type: string
-                      required:
-                      - name
                       type: object
                     type: array
                     x-kubernetes-list-map-keys:
@@ -33226,11 +33637,10 @@ spec:
                         items:
                           properties:
                             name:
+                              default: ""
                               type: string
                             secretName:
                               type: string
-                          required:
-                          - name
                           type: object
                         type: array
                         x-kubernetes-list-map-keys:
@@ -33269,11 +33679,10 @@ spec:
                         items:
                           properties:
                             name:
+                              default: ""
                               type: string
                             secretName:
                               type: string
-                          required:
-                          - name
                           type: object
                         type: array
                         x-kubernetes-list-map-keys:
@@ -33324,7 +33733,11 @@ spec:
               transferAdvisor:
                 description: Configuration for the Nano Gateway Transfer Advisor service
                 properties:
+                  cronJobEnabled:
+                    description: Enable the Transfer Advisor cron job
+                    type: boolean
                   enabled:
+                    default: true
                     description: Enable the Transfer Advisor feature
                     type: boolean
                   taskEnabled:
@@ -33368,6 +33781,16 @@ spec:
               aiDataServiceSecret:
                 description: Name of the AI data service API key secret
                 type: string
+              apiAgentStatus:
+                description: APIAgent status information
+                properties:
+                  analyticsDatastoreClientSecret:
+                    description: Analytics reference used to create the Datastore-client
+                    type: string
+                  analyticsDatastoreHost:
+                    description: Analytics subsystem to use as storage backend
+                    type: string
+                type: object
               atmCredentialSecret:
                 description: Name of the API Connect Test & Monitor credential secret
                 type: string
@@ -37293,6 +37716,20 @@ spec:
           spec:
             description: NanoGatewayClusterSpec defines the desired state of NanoGatewayCluster
             properties:
+              analyticsCollector:
+                description: Analytics Collector configuration
+                properties:
+                  clientSecret:
+                    description: Client secret for TLS connection to analytics collector
+                    properties:
+                      secretName:
+                        type: string
+                    type: object
+                  endpoint:
+                    description: Endpoint for analytics collector - if specified,
+                      the internal analytics collector will not be deployed
+                    type: string
+                type: object
               annotations:
                 additionalProperties:
                   type: string
@@ -37412,11 +37849,10 @@ spec:
                     items:
                       properties:
                         name:
+                          default: ""
                           type: string
                         secretName:
                           type: string
-                      required:
-                      - name
                       type: object
                     type: array
                     x-kubernetes-list-map-keys:
@@ -40248,6 +40684,10 @@ spec:
                 description: Currently running micoservice security settings (custom
                   certificates, certManager)
                 type: string
+              otelConfigHash:
+                description: Hash of the OTel configuration ConfigMap content to detect
+                  changes
+                type: string
               phase:
                 description: Phase
                 type: string
@@ -40415,7 +40855,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.20.1
   name: poolers.postgresql.k8s.enterprisedb.io
 spec:
   group: postgresql.k8s.enterprisedb.io
@@ -40744,7 +41184,6 @@ spec:
                     description: |-
                       ClientCASecret provides PgBouncer’s client_tls_ca_file, the root
                       CA for validating client certificates
-                      Only available in 1.28 or later
                     properties:
                       name:
                         description: Name of the referent.
@@ -40756,7 +41195,6 @@ spec:
                     description: |-
                       ClientTLSSecret provides PgBouncer’s client_tls_key_file (private key)
                       and client_tls_cert_file (certificate) used to accept client connections
-                      Only available in 1.28 or later
                     properties:
                       name:
                         description: Name of the referent.
@@ -40797,7 +41235,6 @@ spec:
                     description: |-
                       ServerCASecret provides PgBouncer’s server_tls_ca_file, the root
                       CA for validating PostgreSQL certificates
-                      Only available in 1.28 or later
                     properties:
                       name:
                         description: Name of the referent.
@@ -40810,7 +41247,6 @@ spec:
                       ServerTLSSecret, when pointing to a TLS secret, provides pgbouncer's
                       `server_tls_key_file` and `server_tls_cert_file`, used when
                       authenticating against PostgreSQL.
-                      Only available in 1.28 or later
                     properties:
                       name:
                         description: Name of the referent.
@@ -43050,7 +43486,9 @@ spec:
                                   type: integer
                               type: object
                             resizePolicy:
-                              description: Resources resize policy for the container.
+                              description: |-
+                                Resources resize policy for the container.
+                                This field cannot be set on ephemeral containers.
                               items:
                                 description: ContainerResizePolicy represents resource
                                   resize policy for the container.
@@ -46273,7 +46711,9 @@ spec:
                                   type: integer
                               type: object
                             resizePolicy:
-                              description: Resources resize policy for the container.
+                              description: |-
+                                Resources resize policy for the container.
+                                This field cannot be set on ephemeral containers.
                               items:
                                 description: ContainerResizePolicy represents resource
                                   resize policy for the container.
@@ -47060,8 +47500,8 @@ spec:
                           will be made available to those containers which consume them
                           by name.
 
-                          This is an alpha field and requires enabling the
-                          DynamicResourceAllocation feature gate.
+                          This is a stable field but requires that the
+                          DynamicResourceAllocation feature gate is enabled.
 
                           This field is immutable.
                         items:
@@ -47520,9 +47960,10 @@ spec:
                             operator:
                               description: |-
                                 Operator represents a key's relationship to the value.
-                                Valid operators are Exists and Equal. Defaults to Equal.
+                                Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
                                 Exists is equivalent to wildcard for value, so that a pod can
                                 tolerate all taints of a particular category.
+                                Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
                               type: string
                             tolerationSeconds:
                               description: |-
@@ -48316,7 +48757,7 @@ spec:
                                         resources:
                                           description: |-
                                             resources represents the minimum resources the volume should have.
-                                            If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+                                            Users are allowed to specify resource requirements
                                             that are lower than previous value but must still be higher than capacity recorded in the
                                             status field of the claim.
                                             More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
@@ -49202,6 +49643,24 @@ spec:
                                             description: Kubelet's generated CSRs
                                               will be addressed to this signer.
                                             type: string
+                                          userAnnotations:
+                                            additionalProperties:
+                                              type: string
+                                            description: |-
+                                              userAnnotations allow pod authors to pass additional information to
+                                              the signer implementation.  Kubernetes does not restrict or validate this
+                                              metadata in any way.
+
+                                              These values are copied verbatim into the `spec.unverifiedUserAnnotations` field of
+                                              the PodCertificateRequest objects that Kubelet creates.
+
+                                              Entries are subject to the same validation as object metadata annotations,
+                                              with the addition that all keys must be domain-prefixed. No restrictions
+                                              are placed on values, except an overall size limitation on the entire field.
+
+                                              Signers should document the keys and values they support. Signers should
+                                              deny requests that contain keys they do not recognize.
+                                            type: object
                                         required:
                                         - keyType
                                         - signerName
@@ -49627,6 +50086,42 @@ spec:
                         x-kubernetes-list-map-keys:
                         - name
                         x-kubernetes-list-type: map
+                      workloadRef:
+                        description: |-
+                          WorkloadRef provides a reference to the Workload object that this Pod belongs to.
+                          This field is used by the scheduler to identify the PodGroup and apply the
+                          correct group scheduling policies. The Workload object referenced
+                          by this field may not exist at the time the Pod is created.
+                          This field is immutable, but a Workload object with the same name
+                          may be recreated with different policies. Doing this during pod scheduling
+                          may result in the placement not conforming to the expected policies.
+                        properties:
+                          name:
+                            description: |-
+                              Name defines the name of the Workload object this Pod belongs to.
+                              Workload must be in the same namespace as the Pod.
+                              If it doesn't match any existing Workload, the Pod will remain unschedulable
+                              until a Workload object is created and observed by the kube-scheduler.
+                              It must be a DNS subdomain.
+                            type: string
+                          podGroup:
+                            description: |-
+                              PodGroup is the name of the PodGroup within the Workload that this Pod
+                              belongs to. If it doesn't match any existing PodGroup within the Workload,
+                              the Pod will remain unschedulable until the Workload object is recreated
+                              and observed by the kube-scheduler. It must be a DNS label.
+                            type: string
+                          podGroupReplicaKey:
+                            description: |-
+                              PodGroupReplicaKey specifies the replica key of the PodGroup to which this
+                              Pod belongs. It is used to distinguish pods belonging to different replicas
+                              of the same pod group. The pod group policy is applied separately to each replica.
+                              When set, it must be a DNS label.
+                            type: string
+                        required:
+                        - name
+                        - podGroup
+                        type: object
                     required:
                     - containers
                     type: object
@@ -50217,11 +50712,10 @@ spec:
                         items:
                           properties:
                             name:
+                              default: ""
                               type: string
                             secretName:
                               type: string
-                          required:
-                          - name
                           type: object
                         type: array
                         x-kubernetes-list-map-keys:
@@ -50267,11 +50761,10 @@ spec:
                     items:
                       properties:
                         name:
+                          default: ""
                           type: string
                         secretName:
                           type: string
-                      required:
-                      - name
                       type: object
                     type: array
                     x-kubernetes-list-map-keys:
@@ -50358,11 +50851,10 @@ spec:
                     items:
                       properties:
                         name:
+                          default: ""
                           type: string
                         secretName:
                           type: string
-                      required:
-                      - name
                       type: object
                     type: array
                     x-kubernetes-list-map-keys:
@@ -53832,7 +54324,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.20.1
   name: publications.postgresql.k8s.enterprisedb.io
 spec:
   group: postgresql.k8s.enterprisedb.io
@@ -54027,7 +54519,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.20.1
   name: scheduledbackups.postgresql.k8s.enterprisedb.io
 spec:
   group: postgresql.k8s.enterprisedb.io
@@ -54218,7 +54710,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
+    controller-gen.kubebuilder.io/version: v0.20.1
   name: subscriptions.postgresql.k8s.enterprisedb.io
 spec:
   group: postgresql.k8s.enterprisedb.io
@@ -54706,11 +55198,10 @@ spec:
                     items:
                       properties:
                         name:
+                          default: ""
                           type: string
                         secretName:
                           type: string
-                      required:
-                      - name
                       type: object
                     type: array
                     x-kubernetes-list-map-keys:
@@ -54807,11 +55298,10 @@ spec:
                     items:
                       properties:
                         name:
+                          default: ""
                           type: string
                         secretName:
                           type: string
-                      required:
-                      - name
                       type: object
                     type: array
                     x-kubernetes-list-map-keys:
@@ -57559,11 +58049,10 @@ spec:
                     items:
                       properties:
                         name:
+                          default: ""
                           type: string
                         secretName:
                           type: string
-                      required:
-                      - name
                       type: object
                     type: array
                     x-kubernetes-list-map-keys:
@@ -57952,6 +58441,12 @@ spec:
           spec:
             description: WMAPIGatewayRestoreSpec defines the desired state of WMAPIGatewayRestore
             properties:
+              abort:
+                default: false
+                description: |-
+                  Abort signals to cancel the restore and cleanup
+                  Set to true to abort an in-progress restore operation
+                type: boolean
               backupID:
                 description: WMAPIGateway backup id
                 type: string
@@ -58063,7 +58558,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.19.0
-    datapower.ibm.com/operator-version: 1.17.0
+    datapower.ibm.com/operator-version: 1.18.2
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: datapower-operator
@@ -58249,7 +58744,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.19.0
-    datapower.ibm.com/operator-version: 1.17.0
+    datapower.ibm.com/operator-version: 1.18.2
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: datapower-operator
@@ -58442,7 +58937,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.19.0
-    datapower.ibm.com/operator-version: 1.17.0
+    datapower.ibm.com/operator-version: 1.18.2
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: datapower-operator
@@ -58542,7 +59037,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.19.0
-    datapower.ibm.com/operator-version: 1.17.0
+    datapower.ibm.com/operator-version: 1.18.2
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: datapower-operator
@@ -60232,6 +60727,8 @@ spec:
                       DataPower firmware version and usage. For more information:
                       DOC_GUIDE_LICENSES'
                     enum:
+                    - L-MBWD-G64ATA
+                    - L-PDSS-XG3B9H
                     - L-LQQV-WT4TTD
                     - L-HTVU-N56UR7
                     - L-QDDF-429Q47
@@ -61380,8 +61877,8 @@ spec:
                   type: object
                 type: array
               version:
-                description: Can refer to specific version, i.e. 10.6.6.0, or a channel,
-                  i.e. 10.6-cd
+                description: Can refer to specific version, i.e. 11.0.0.0, or a channel,
+                  i.e. 11.0-sc2
                 minLength: 1
                 type: string
             required:
@@ -61708,7 +62205,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.19.0
-    datapower.ibm.com/operator-version: 1.17.0
+    datapower.ibm.com/operator-version: 1.18.2
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: datapower-operator
@@ -61939,7 +62436,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.19.0
-    datapower.ibm.com/operator-version: 1.17.0
+    datapower.ibm.com/operator-version: 1.18.2
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: datapower-operator

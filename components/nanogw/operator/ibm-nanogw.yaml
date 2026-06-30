@@ -1,8 +1,13 @@
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: datapower-nano-system
+---
+apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: datapower-nano-operator
-  namespace: nanogw
+  namespace: REPLACE-NAMESPACE
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -41,10 +46,12 @@ rules:
       - nano.datapower.ibm.com
     resources:
       - apis
+      - apisets
       - assemblies
       - autoscaleconfigs
       - jwtproviders
       - managements
+      - mcptools
       - oauthproviders
       - runtimeconfigs
       - runtimes
@@ -63,11 +70,13 @@ rules:
       - nano.datapower.ibm.com
     resources:
       - apis/status
+      - apisets/status
       - assemblies/status
       - autoscaleconfigs/status
       - jwtproviders/status
       - managements/scale
       - managements/status
+      - mcptools/status
       - oauthproviders/status
       - runtimeconfigs/status
       - runtimes/scale
@@ -159,13 +168,13 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: datapower-nano-operator
-    namespace: nanogw
+    namespace: REPLACE-NAMESPACE
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: datapower-nano-operator
-  namespace: nanogw
+  namespace: REPLACE-NAMESPACE
 spec:
   replicas: 1
   selector:
@@ -187,6 +196,8 @@ spec:
                       - amd64
       containers:
         - env:
+            - name: DPN_LABEL_SELECTOR
+              value: "managed-by!=idig"
             - name: RUST_LOG
               value: dpn_operator=info
             - name: RUST_BACKTRACE
@@ -194,8 +205,8 @@ spec:
             - name: POD_NAMESPACE
               valueFrom:
                 fieldRef:
-                  fieldPath: metadata.namespace        
-          image: cp.icr.io/cp/datapower/datapower-nano-operator:build.289@sha256:1143fb55029eb99389a9e055703d0e9fa785dffc39512563923b9873327cd299
+                  fieldPath: metadata.namespace
+          image: REPLACE-DOCKER-REGISTRY/datapower-nano-operator:main
           imagePullPolicy: Always
           name: datapower-nano-operator
           resources:
@@ -216,7 +227,7 @@ spec:
       hostNetwork: false
       hostPID: false
       imagePullSecrets:
-        - name: ibm-entitlement-key
+        - name: DEFAULT_IMAGE_PULL_SECRET
       securityContext:
         runAsNonRoot: true
       serviceAccountName: datapower-nano-operator
