@@ -6,10 +6,10 @@ metadata:
 spec:
   # Required: Enable gateway merging for API Connect
   mergeGateways: true
-  enableBackend: true
   provider:
     type: Kubernetes
     kubernetes:
+      enableBackend: true
       envoyDeployment:
         pod:
           # Optional: Customize pod configuration as needed
