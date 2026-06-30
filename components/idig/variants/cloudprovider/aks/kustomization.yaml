@@ -1,8 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1alpha1
 kind: Component
 
-patches:
-- path: idig-cluster-patch.yaml
-
 resources:
 - analytics-cluster-patch.yaml
+- nanogw-cluster-patch.yaml
