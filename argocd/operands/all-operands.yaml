@@ -36,6 +36,8 @@ spec:
         - manager
         jqPathExpressions:
         - .metadata.annotations["com.ibm.apiconnect/analytics-upgraded-version"]
+        - .metadata.annotations["argocd.argoproj.io/sync-options"]
+        - .metadata.annotations["argocd.argoproj.io/tracking-id"]
       - group: devportal.apiconnect.ibm.com
         kind: DevPortalCluster
         managedFieldsManagers:
