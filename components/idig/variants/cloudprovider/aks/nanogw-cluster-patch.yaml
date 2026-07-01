@@ -1,0 +1,11 @@
+apiVersion: nanogateway.apiconnect.ibm.com/v1beta1
+kind: NanoGatewayCluster
+metadata:
+  name: idig-nanogw
+  namespace: idig
+  annotations:
+    argocd.argoproj.io/sync-options: ServerSideApply=true
+spec:
+  mgmtEndpoint:
+    gatewayClassName: envoy
+    ingressClassName: ""
