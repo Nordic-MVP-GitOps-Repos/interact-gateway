@@ -5,4 +5,4 @@ resources:
 
 - idig-cluster-dev.yaml
 - ingress-issuer-v1.yaml
-- max-map-count-daemonset.yaml
+#- max-map-count-daemonset.yaml
