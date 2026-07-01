@@ -9,4 +9,4 @@ spec:
   ingestion:
     endpoint:
       gatewayClassName: envoy
-      ingressClassName: null
+      ingressClassName: ""
