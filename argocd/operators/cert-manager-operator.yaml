@@ -23,6 +23,7 @@ spec:
       name: cert-manager-operator-webhook
       jsonPointers:
         - /webhooks/0/clientConfig/caBundle
+        - /webhooks/0/namespaceSelector
   syncPolicy:
     syncOptions:
       - ServerSideApply=true
