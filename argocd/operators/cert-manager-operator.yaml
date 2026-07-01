@@ -17,6 +17,12 @@ spec:
     helm:
       valuesObject:
         installCRDs: true
+  ignoreDifferences:
+    - group: admissionregistration.k8s.io
+      kind: ValidatingWebhookConfiguration
+      name: cert-manager-operator-webhook
+      jsonPointers:
+        - /webhooks/0/clientConfig/caBundle
   syncPolicy:
     syncOptions:
       - ServerSideApply=true
