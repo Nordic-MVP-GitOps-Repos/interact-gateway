@@ -34,10 +34,15 @@ spec:
         kind: AnalyticsCluster
         managedFieldsManagers:
         - manager
+        jqPathExpressions:
+        - .metadata.annotations["com.ibm.apiconnect/analytics-upgraded-version"]
       - group: devportal.apiconnect.ibm.com
         kind: DevPortalCluster
         managedFieldsManagers:
         - manager
+        jqPathExpressions:
+        - .metadata.annotations["argocd.argoproj.io/sync-options"]
+        - .metadata.annotations["argocd.argoproj.io/tracking-id"]
       - group: nanogateway.apiconnect.ibm.com
         kind: NanoGatewayCluster
         managedFieldsManagers:
