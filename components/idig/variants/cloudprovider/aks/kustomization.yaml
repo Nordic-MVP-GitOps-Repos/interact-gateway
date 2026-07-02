@@ -5,6 +5,3 @@ resources:
 - analytics-cluster-patch.yaml
 - devportal-cluster-patch.yaml
 - nanogw-cluster-patch.yaml
-
-patches:
-- path: idig-cluster-patch.yaml
