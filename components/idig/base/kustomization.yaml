@@ -6,5 +6,6 @@ resources:
 - idig-cluster-dev.yaml
 - ingress-issuer-v1.yaml
 - gateway-classname-patches/
+- host-alias/
 
 #- max-map-count-daemonset.yaml
