@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns-custom
+  namespace: kube-system
+data:
+  hosts.override: |
+    hosts {
+        20.54.238.192 ai.itzaks-nurmlarj.az.techzone.ibm.com
+        20.54.238.192 idig.itzaks-nurmlarj.az.techzone.ibm.com
+        fallthrough
+    }
