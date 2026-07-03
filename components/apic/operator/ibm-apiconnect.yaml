@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Namespace
 metadata:
   annotations:
-    productVersion: 12.1.1.0-1041
+    productVersion: 12.1.1.0-1000
   labels:
     control-plane: ibm-apiconnect
   name: idig
@@ -1028,7 +1028,7 @@ metadata:
     productID: 2c717d4ecc924aa5ac345015b55492eb
     productMetric: FREE
     productName: IBM API Connect Enterprise
-    productVersion: 12.1.1.0-1041
+    productVersion: 12.1.1.0-1000
   name: ibm-apiconnect
   namespace: idig
 spec:
@@ -1049,7 +1049,7 @@ spec:
         productID: 2c717d4ecc924aa5ac345015b55492eb
         productMetric: FREE
         productName: IBM API Connect Enterprise
-        productVersion: 12.1.1.0-1041
+        productVersion: 12.1.1.0-1000
       labels:
         app.kubernetes.io/component: apiconnect-operator
         app.kubernetes.io/instance: ibm-apiconnect
@@ -1099,7 +1099,7 @@ spec:
           value: "false"
         - name: OPERATOR_MODE
           value: "idig"
-        image: icr.io/idig/ibm-apiconnect-operator@sha256:6d9387192efe6eb09da8266242dc403c8dc19d83287f8dcd2ac99916075637f6
+        image: icr.io/idig/ibm-apiconnect-operator@sha256:b83302f355222d757512ac0f524fe51764b9078fedc6c15ce02f08e96714ff14
         name: ibm-apiconnect
         ports:
         - containerPort: 9443
@@ -1144,7 +1144,7 @@ spec:
           value: "false"
         - name: OPERATOR_MODE
           value: "idig"
-        image: icr.io/idig/ibm-apiconnect-operator@sha256:6d9387192efe6eb09da8266242dc403c8dc19d83287f8dcd2ac99916075637f6
+        image: icr.io/idig/ibm-apiconnect-operator@sha256:b83302f355222d757512ac0f524fe51764b9078fedc6c15ce02f08e96714ff14
         name: webhook
         resources:
           limits:
@@ -1188,7 +1188,7 @@ spec:
           value: "false"
         - name: OPERATOR_MODE
           value: "idig"
-        image: icr.io/idig/ibm-apiconnect-operator@sha256:6d9387192efe6eb09da8266242dc403c8dc19d83287f8dcd2ac99916075637f6
+        image: icr.io/idig/ibm-apiconnect-operator@sha256:b83302f355222d757512ac0f524fe51764b9078fedc6c15ce02f08e96714ff14
         name: webhook-delete
         resources:
           limits:
