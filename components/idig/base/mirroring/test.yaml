@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: registry-mirror
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: containerd-mirror-cpicr
+  namespace: registry-mirror
+  labels:
+    app: containerd-mirror-cpicr
+spec:
+  selector:
+    matchLabels:
+      app: containerd-mirror-cpicr
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: containerd-mirror-cpicr
+    spec:
+      # Run only on Linux nodes; adjust nodeSelector if you use node pools/taints
+      nodeSelector:
+        kubernetes.io/os: linux
+      tolerations:
+        - operator: Exists            # tolerate all taints so it lands on every node
+      hostPID: false
+      hostNetwork: false
+      priorityClassName: system-node-critical
+      containers:
+        - name: writer
+         
+          image: <acr>.azurecr.io/utils/busybox:2.0
+          securityContext:
+            privileged: true          # needed to write under /etc/containerd on host
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -eu
+              DIR=/host/etc/containerd/certs.d/cp.icr.io
+              mkdir -p "$DIR"
+              cat > "$DIR/hosts.toml" <<'EOF'
+              server = "https://cp.icr.io"
+
+              [host."https://<acr>.azurecr.io/v2/cp-mirror"]
+                capabilities = ["pull", "resolve"]
+                override_path = true
+              EOF
+              echo "wrote $DIR/hosts.toml on $(hostname)"
+              # Keep the pod alive so the DaemonSet stays Ready and re-asserts on restart
+              while true; do sleep 3600; done
+          volumeMounts:
+            - name: host-etc-containerd
+              mountPath: /host/etc/containerd
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 50m
+              memory: 32Mi
+      volumes:
+        - name: host-etc-containerd
+          hostPath:
+            path: /etc/containerd
+            type: Directory
