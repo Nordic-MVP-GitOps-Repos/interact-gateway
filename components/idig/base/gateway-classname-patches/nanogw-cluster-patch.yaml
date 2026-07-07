@@ -10,3 +10,12 @@ spec:
     gatewayClassName: envoy
     ingressClassName: ""
   imageRegistry: icr.io/idig
+  template:
+    - containers:
+        - image: icr.io/idig/datapower-nano-management:1.0.0
+          name: nanogw-management
+      name: nanogw-management
+    - containers:
+        - image: icr.io/idig/datapower-nano-runtime:1.0.0
+          name: nanogw-runtime-config
+      name: nanogw-runtime-config
