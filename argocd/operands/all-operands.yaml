@@ -6,18 +6,19 @@ spec:
   generators:
   - list:
       elements:
-        - name: coredns
-          namespace: kube-system
-          sync-wave: "100"
+        # Only needed if we need to override DNS
+        #- name: coredns
+        #  namespace: kube-system
+        #  sync-wave: "100"
         - name: envoy
           namespace: envoy-gateway-system
           sync-wave: "300"
         - name: valkey
           namespace: idig
           sync-wave: "300"
-        - name: idig
-          namespace: idig
-          sync-wave: "300"
+        #- name: idig
+        #  namespace: idig
+        #  sync-wave: "300"
   template:
     metadata:
       name: '{{name}}'
@@ -28,7 +29,7 @@ spec:
     spec:
       project: default
       source:
-        path: 'envs/aks/nonprod/{{name}}/'
+        path: 'envs/iks/nonprod/{{name}}/'
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{namespace}}'
