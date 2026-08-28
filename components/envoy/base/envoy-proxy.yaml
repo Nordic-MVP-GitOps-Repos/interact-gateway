@@ -13,3 +13,10 @@ spec:
     type: Kubernetes
     kubernetes:
       envoyDeployment: {}
+  telemetry:
+    accessLog:
+      settings:
+        - format:
+            type: Text
+            text: |
+              [%START_TIME%] "%REQ(:METHOD)% %REQ(X-ENVOY-ORIGINAL-PATH?:PATH)% %PROTOCOL%" %RESPONSE_CODE% route=%ROUTE_NAME% vhost=%VIRTUAL_HOST_NAME% upstream=%UPSTREAM_HOST%
