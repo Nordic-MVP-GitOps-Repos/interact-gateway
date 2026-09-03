@@ -12,17 +12,7 @@ spec:
   provider:
     type: Kubernetes
     kubernetes:
-      envoyDeployment:
-        replicas: 3
-        pod:
-          affinity:
-            podAntiAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                - labelSelector:
-                    matchLabels:
-                      app.kubernetes.io/component: proxy
-                      app.kubernetes.io/managed-by: envoy-gateway
-                  topologyKey: kubernetes.io/hostname
+      envoyDeployment: {}
   telemetry:
     accessLog:
       settings:
