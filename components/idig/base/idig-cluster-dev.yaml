@@ -58,6 +58,7 @@ spec:
   # NanoGateway configuration is handled by the profile template
   # To customize NanoGateway settings, patch the NanoGatewayCluster CR after creation
   nanoGateway:
-    gatewayDomain: nanogw.nokia-idig-verification-c-e7d3d93b8b317d269525bf063b24f98d-0000.eu-de.containers.appdomain.cloud
+    #gatewayDomain: nanogw.nokia-idig-verification-c-e7d3d93b8b317d269525bf063b24f98d-0000.eu-de.containers.appdomain.cloud
+    gatewayDomain: nanogw.short-domain-name
     mgmtEndpoint:
       gatewayClassName: envoy
