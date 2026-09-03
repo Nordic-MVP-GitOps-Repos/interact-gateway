@@ -19,8 +19,8 @@ spec:
   enableDevPortal: true  # Set to true to enable DevPortal
 
   # The base domain for all endpoints in the platform
-  domain: nokia-idig-verification-c-e7d3d93b8b317d269525bf063b24f98d-0000.eu-de.containers.appdomain.cloud
-  #domain: short-domain-name
+  #domain: nokia-idig-verification-c-e7d3d93b8b317d269525bf063b24f98d-0000.eu-de.containers.appdomain.cloud
+  domain: 02d752a2-eu-de.lb.appdomain.cloud
 
   # Optional: Custom ingress certificate for IDIG Gateway HTTPRoutes (idig-api and idig-web)
   # If not specified, cert-manager will automatically generate certificates using ingress-issuer
@@ -58,7 +58,7 @@ spec:
   # NanoGateway configuration is handled by the profile template
   # To customize NanoGateway settings, patch the NanoGatewayCluster CR after creation
   nanoGateway:
-    gatewayDomain: nanogw.nokia-idig-verification-c-e7d3d93b8b317d269525bf063b24f98d-0000.eu-de.containers.appdomain.cloud
-    #gatewayDomain: nanogw.short-domain-name
+    #gatewayDomain: nanogw.nokia-idig-verification-c-e7d3d93b8b317d269525bf063b24f98d-0000.eu-de.containers.appdomain.cloud
+    gatewayDomain: nanogw.02d752a2-eu-de.lb.appdomain.cloud
     mgmtEndpoint:
       gatewayClassName: envoy
