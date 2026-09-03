@@ -31,7 +31,7 @@ spec:
       containers:
       - env:
         - name: RUST_LOG
-          value: idig_operator=trace
+          value: idig_operator=trace,dpn_operator=trace,dpn_common=trace, info
         - name: RUST_BACKTRACE
           value: "1"
         - name: POD_NAMESPACE

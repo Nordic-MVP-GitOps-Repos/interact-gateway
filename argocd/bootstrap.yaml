@@ -11,6 +11,7 @@ spec:
   source:
     path: ./argocd
     repoURL: https://github.com/Nordic-MVP-GitOps-Repos/interact-gateway.git
+    targetRevision: new-verification-cluster
   syncPolicy:
     automated:
       prune: true
