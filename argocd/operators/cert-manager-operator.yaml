@@ -18,7 +18,7 @@ spec:
       valuesObject:
         installCRDs: true
         extraArgs:
-          - --feature-gates=GatewayAPI=true
+          - --enable-gateway-api
   ignoreDifferences:
     - group: admissionregistration.k8s.io
       kind: ValidatingWebhookConfiguration
