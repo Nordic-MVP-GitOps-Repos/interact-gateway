@@ -8,6 +8,11 @@ spec:
       name: letsencrypt-cluster-issuer-account-key
     server: 'https://acme-v02.api.letsencrypt.org/directory'
     solvers:
-    - http01:
-        ingress:
-          class: envoy
+    - selector: {}
+      http01:
+        gatewayHTTPRoute:
+          parentRefs:
+          - group: gateway.networking.k8s.io
+            kind: Gateway
+            name: envoy-gateway
+            namespace: envoy-gateway-system
