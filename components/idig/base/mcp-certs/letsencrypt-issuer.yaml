@@ -10,9 +10,5 @@ spec:
     solvers:
     - selector: {}
       http01:
-        gatewayHTTPRoute:
-          parentRefs:
-          - group: gateway.networking.k8s.io
-            kind: Gateway
-            name: envoy-gateway
-            namespace: envoy-gateway-system
+        ingress:
+          ingressClassName: public-iks-k8s-nginx
